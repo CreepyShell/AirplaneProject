@@ -1,7 +1,7 @@
-package BusinessLayer;
+package Interfaces;
 
-import DataLayer.Location;
-import DataLayer.Route;
+import Models.Location;
+import Models.Route;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package DataLayer;
+package Models;
 
 import java.util.List;
 
@@ -8,4 +8,5 @@ public class Plane {
     private Location location;
     private double speed;
     private List<Route> routes;
+    private Height height;
 }

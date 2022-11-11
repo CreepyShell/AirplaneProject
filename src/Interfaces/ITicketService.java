@@ -1,6 +1,6 @@
-package BusinessLayer;
+package Interfaces;
 
-import DataLayer.*;
+import Models.*;
 
 public interface ITicketService {
     Ticket buyTicket(User user, Route route);
