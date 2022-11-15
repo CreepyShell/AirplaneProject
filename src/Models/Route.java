@@ -1,6 +1,9 @@
 package Models;
 
+import Models.Plane.Plane;
+
 import java.util.Date;
+import java.util.UUID;
 
 public class Route {
     private String id;
@@ -9,4 +12,65 @@ public class Route {
     private Location takeOffLocation;
     private Location landingLocation;
     private Plane plane;
+
+    public Route() {
+        setId();
+    }
+
+    public Route(Date takeOffTime, Date landingTime, Location takeOffLocation, Location landingLocation, Plane plane) {
+        setId();
+        setTakeOffTime(takeOffTime);
+        setLandingTime(landingTime);
+        setTakeOffLocation(takeOffLocation);
+        setLandingLocation(landingLocation);
+        setPlane(plane);
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    private void setId() {
+        this.id = UUID.randomUUID().toString();
+    }
+
+    public Date getTakeOffTime() {
+        return takeOffTime;
+    }
+
+    public void setTakeOffTime(Date takeOffTime) {
+        this.takeOffTime = takeOffTime;
+    }
+
+    public Date getLandingTime() {
+        return landingTime;
+    }
+
+    public void setLandingTime(Date landingTime) {
+        this.landingTime = landingTime;
+    }
+
+    public Location getTakeOffLocation() {
+        return takeOffLocation;
+    }
+
+    public void setTakeOffLocation(Location takeOffLocation) {
+        this.takeOffLocation = takeOffLocation;
+    }
+
+    public Location getLandingLocation() {
+        return landingLocation;
+    }
+
+    public void setLandingLocation(Location landingLocation) {
+        this.landingLocation = landingLocation;
+    }
+
+    public Plane getPlane() {
+        return plane;
+    }
+
+    public void setPlane(Plane plane) {
+        this.plane = plane;
+    }
 }

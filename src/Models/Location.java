@@ -1,5 +1,7 @@
 package Models;
 
+import java.util.UUID;
+
 public class Location {
     private String id;
     private double x;
@@ -7,23 +9,28 @@ public class Location {
     private String city;
     private String country;
 
-    public Location(String id, double x, double y, String city, String country) {
-        this.id = id;
-        this.x = x;
-        this.y = y;
-        this.city = city;
-        this.country = country;
+    public Location(double x, double y, String city, String country) {
+       setId();
+       setX(x);
+       setY(y);
+       setCity(city);
+       setCountry(country);
     }
 
     public Location() {
+        setId();
+        setY(0);
+        setX(0);
+        setCity("null");
+        setCountry("null");
     }
 
     public String getId() {
         return id;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    private void setId() {
+        this.id = UUID.randomUUID().toString();
     }
 
     public double getX() {
