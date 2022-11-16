@@ -47,11 +47,11 @@ public abstract class Plane {
     public abstract void setMaxAmountOfSeats(int maxAmountOfSeats);
 
     public Location getLocation() {
-        return new Location(location.getX(), location.getY(), location.getCity(), location.getCountry());
+        return new Location(location.getLatitude(), location.getLongitude(), location.getCity(), location.getCountry());
     }
 
     public void setLocation(Location location) {
-        this.location = new Location(location.getX(), location.getY(), location.getCity(), location.getCountry());
+        this.location = new Location(location.getLatitude(), location.getLongitude(), location.getCity(), location.getCountry());
     }
 
     public double getSpeed() {

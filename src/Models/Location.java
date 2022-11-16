@@ -4,23 +4,23 @@ import java.util.UUID;
 
 public class Location {
     private String id;
-    private double x;
-    private double y;
+    private double latitude;
+    private double longitude;
     private String city;
     private String country;
 
-    public Location(double x, double y, String city, String country) {
+    public Location(double latitude, double longitude, String city, String country) {
        setId();
-       setX(x);
-       setY(y);
+       setLatitude(latitude);
+       setLongitude(longitude);
        setCity(city);
        setCountry(country);
     }
 
     public Location() {
         setId();
-        setY(0);
-        setX(0);
+        setLongitude(0);
+        setLatitude(0);
         setCity("null");
         setCountry("null");
     }
@@ -33,20 +33,20 @@ public class Location {
         this.id = UUID.randomUUID().toString();
     }
 
-    public double getX() {
-        return x;
+    public double getLatitude() {
+        return latitude;
     }
 
-    public void setX(double x) {
-        this.x = x;
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
     }
 
-    public double getY() {
-        return y;
+    public double getLongitude() {
+        return longitude;
     }
 
-    public void setY(double y) {
-        this.y = y;
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 
     public String getCity() {

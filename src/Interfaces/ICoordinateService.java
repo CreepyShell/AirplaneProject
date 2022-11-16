@@ -1,10 +1,10 @@
 package Interfaces;
 
-import Models.Line;
+import Models.Circle;
 import Models.Location;
 
 public interface ICoordinateService {
-    double findDistance(Location start, Location end);
-    Line buildLine(Location start, Location end);
-    Location findLinesIntersection(Line first, Line second);
+    double findDistance(Location start, Location end, double radius);
+    Circle buildCircle(Location start, Location end, double radius);
+    Location findCirclesIntersection(Circle first, Circle second);
 }

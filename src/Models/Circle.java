@@ -2,19 +2,20 @@ package Models;
 
 import java.util.UUID;
 
-public class Line {
+public class Circle {
     private String id;
     private double x;
     private double y;
     private double number;
 
-    public Line(){
+
+    public Circle(){
         setId();
         setNumber(0);
         setX(0);
         setY(0);
     }
-    public Line(double x, double y, double number) {
+    public Circle(double x, double y, double number) {
         setId();
         setX(x);
         setY(y);
