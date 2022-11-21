@@ -12,18 +12,20 @@ public class Route {
     private Location takeOffLocation;
     private Location landingLocation;
     private Plane plane;
+    private double cost;
 
     public Route() {
         setId();
     }
 
-    public Route(Date takeOffTime, Date landingTime, Location takeOffLocation, Location landingLocation, Plane plane) {
+    public Route(Date takeOffTime, Date landingTime, Location takeOffLocation, Location landingLocation, Plane plane, double cost) {
         setId();
         setTakeOffTime(takeOffTime);
         setLandingTime(landingTime);
         setTakeOffLocation(takeOffLocation);
         setLandingLocation(landingLocation);
         setPlane(plane);
+        setCost(cost);
     }
 
     public String getId() {
@@ -72,5 +74,12 @@ public class Route {
 
     public void setPlane(Plane plane) {
         this.plane = plane;
+    }
+    public double getCost() {
+        return cost;
+    }
+
+    public void setCost(double cost) {
+        this.cost = cost;
     }
 }

@@ -9,19 +9,17 @@ public class Ticket {
     private Date dateReschedule;
     private User user;
     private Route route;
-    private double cost;
 
     public Ticket(){
     setId();
     }
 
-    public Ticket(Date dateBought, User user, Route route, double cost) {
+    public Ticket(Date dateBought, User user, Route route) {
         setId();
         setDateBought(dateBought);
         setDateReschedule(dateBought);
         setUser(user);
         setRoute(route);
-        setCost(cost);
     }
 
     public String getId() {
@@ -62,13 +60,5 @@ public class Ticket {
 
     public void setRoute(Route route) {
         this.route = route;
-    }
-
-    public double getCost() {
-        return cost;
-    }
-
-    public void setCost(double cost) {
-        this.cost = cost;
     }
 }

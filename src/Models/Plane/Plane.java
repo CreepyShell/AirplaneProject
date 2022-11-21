@@ -10,16 +10,17 @@ import java.util.UUID;
 
 public abstract class Plane {
     private String id;
-    private int maxAmountOfSeats;
+    protected int maxAmountOfSeats;
     private Location location;
-    private double speed;
+    protected double speed;
+    protected double maxFlyDistance;
     private List<Route> routes;
     private Height height;
 
     public Plane() {
         setHeight(Height.height1);
         setRoutes(new ArrayList<>());
-        setSpeed(0);
+        setSpeed(200);
         setMaxAmountOfSeats(2);
     }
 
@@ -59,6 +60,11 @@ public abstract class Plane {
     }
 
     public abstract void setSpeed(double speed);
+
+    public double getMaxFlyDistance() {
+        return maxFlyDistance;
+    }
+    public abstract void setMaxFlyDistance(double maxFlyDistance);
 
     public List<Route> getRoutes() {
         return routes;

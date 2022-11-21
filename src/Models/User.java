@@ -1,30 +1,63 @@
 package Models;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 
 public class User {
     private String id;
     private String firstName;
     private String lastName;
+    private String password;
+    private String salt;
+    private String email;
     private List<Ticket> tickets;
 
-    public User(){
+    public User() {
         setId();
         setTickets(new ArrayList<>());
         setFirstName("null");
         setLastName("null");
+        setSalt();
     }
 
-    public User(String firstName, String lastName, List<Ticket> tickets) {
+    public User(String firstName, String lastName, List<Ticket> tickets, String password, String email) {
         setTickets(tickets);
         setLastName(lastName);
         setFirstName(firstName);
+        setPassword(password);
+        setEmail(email);
+        setSalt();
     }
 
-    private void setId(){
+    public void setPassword(String password) {
+       this.password = password;
+    }
+
+    public String getPasswordHash() {
+        return this.password;
+    }
+
+    public String getSalt() {
+        return salt;
+    }
+
+    public void setSalt() {
+        byte[] array = new byte[16];
+        Random random = new Random();
+        random.nextBytes(array);
+        this.salt = new String(array);
+    }
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    private void setId() {
         this.id = UUID.randomUUID().toString();
     }
 
