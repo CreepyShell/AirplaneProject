@@ -1,7 +1,5 @@
 package Interfaces;
 
-import org.json.simple.JSONObject;
-
 public interface IFileService {
     public String getLocationFile();
 
@@ -16,4 +14,5 @@ public interface IFileService {
     boolean writeInFile(String text, String fileName);
 
     String readFromFile(String fileName);
+    boolean isEmptyFile(String fileName);
 }

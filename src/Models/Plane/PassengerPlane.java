@@ -1,9 +1,19 @@
 package Models.Plane;
 
+import Models.Height;
+import Models.Location;
+import Models.Route;
+
 import java.security.InvalidParameterException;
+import java.util.List;
 
 public class PassengerPlane extends Plane {
+    public PassengerPlane() {
+    }
 
+    public PassengerPlane(int maxAmountOfSeats, Location location, double speed, List<Route> routes, Height height) {
+        super(maxAmountOfSeats, location, speed, routes, height);
+    }
 
     @Override
     public void setMaxAmountOfSeats(int maxAmountOfSeats) {

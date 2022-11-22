@@ -8,7 +8,6 @@ import java.security.InvalidParameterException;
 import java.util.List;
 
 public class CargoPlane extends Plane {
-
     private double maxGoodsWeight;
     private double volume;
 

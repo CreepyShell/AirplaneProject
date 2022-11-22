@@ -1,8 +1,21 @@
 package Models.Plane;
 
-import java.security.InvalidParameterException;
+import Models.Height;
+import Models.Location;
+import Models.Route;
 
-public class PrivatePlane extends Plane{
+import java.security.InvalidParameterException;
+import java.util.List;
+
+public class PrivatePlane extends Plane {
+    public PrivatePlane() {
+        super();
+    }
+
+    public PrivatePlane(int maxAmountOfSeats, Location location, double speed, List<Route> routes, Height height) {
+        super(maxAmountOfSeats, location, speed, routes, height);
+    }
+
     public void setMaxAmountOfSeats(int maxAmountOfSeats) {
         if (maxAmountOfSeats > 440 || maxAmountOfSeats < 0)
             throw new InvalidParameterException("Too many amount of seats in private plane or its value less than zero");
@@ -18,7 +31,7 @@ public class PrivatePlane extends Plane{
 
     @Override
     public void setMaxFlyDistance(double maxFlyDistance) {
-        if(maxFlyDistance>14260400 || maxFlyDistance<10000)
+        if (maxFlyDistance > 14260400 || maxFlyDistance < 10000)
             throw new InvalidParameterException("Max fly distance of a private plane is too long or too short(can be between 10km and 14 120km)");
         this.maxFlyDistance = maxFlyDistance;
     }

@@ -64,6 +64,7 @@ public abstract class Plane {
     public double getMaxFlyDistance() {
         return maxFlyDistance;
     }
+
     public abstract void setMaxFlyDistance(double maxFlyDistance);
 
     public List<Route> getRoutes() {

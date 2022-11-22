@@ -8,7 +8,6 @@ import java.util.UUID;
 public class Route {
     private String id;
     private Date takeOffTime;
-    private Date landingTime;
     private Location takeOffLocation;
     private Location landingLocation;
     private Plane plane;
@@ -18,10 +17,9 @@ public class Route {
         setId();
     }
 
-    public Route(Date takeOffTime, Date landingTime, Location takeOffLocation, Location landingLocation, Plane plane, double cost) {
+    public Route(Date takeOffTime, Location takeOffLocation, Location landingLocation, Plane plane, double cost) {
         setId();
         setTakeOffTime(takeOffTime);
-        setLandingTime(landingTime);
         setTakeOffLocation(takeOffLocation);
         setLandingLocation(landingLocation);
         setPlane(plane);
@@ -42,14 +40,6 @@ public class Route {
 
     public void setTakeOffTime(Date takeOffTime) {
         this.takeOffTime = takeOffTime;
-    }
-
-    public Date getLandingTime() {
-        return landingTime;
-    }
-
-    public void setLandingTime(Date landingTime) {
-        this.landingTime = landingTime;
     }
 
     public Location getTakeOffLocation() {
