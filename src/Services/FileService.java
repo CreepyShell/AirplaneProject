@@ -2,6 +2,7 @@ package Services;
 
 import Interfaces.IFileService;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -20,7 +21,7 @@ public class FileService implements IFileService {
         setLocationFile("locations.json");
         setRouteFile("routes.json");
         setTicketFile("tickets.json");
-        setPlaneFile("planes.json");
+        setPlaneFile("Planes.json");
         setUserFile("users.json");
     }
 
@@ -90,11 +91,17 @@ public class FileService implements IFileService {
             List<String> lines = Files.readAllLines(filePath);
             StringBuilder res = new StringBuilder();
             for (String line : lines) {
-                res.append(line+"\n");
+                res.append(line + "\n");
             }
             return res.toString();
         } catch (IOException ex) {
             return "\"Error\":\"Error read file\"";
         }
+    }
+
+    @Override
+    public boolean isEmptyFile(String fileName) {
+        File file = new File(fileName);
+        return file.length() == 0;
     }
 }

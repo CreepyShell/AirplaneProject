@@ -9,6 +9,7 @@ import java.security.InvalidParameterException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.List;
 import java.util.Objects;
 
 public class AuthenticationService implements IAuthenticationService {
@@ -31,7 +32,14 @@ public class AuthenticationService implements IAuthenticationService {
 
     @Override
     public User register(User user) {
-        return null;
+        List<User> users = db.getUsers();
+        if(users.stream().anyMatch(u-> Objects.equals(u.getEmail(), user.getEmail()))){
+            throw new IllegalArgumentException("There is a user with same email");
+        }
+
+        users.add(user);
+        db.setUsers(users);
+        return user;
     }
 
     @Override

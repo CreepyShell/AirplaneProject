@@ -23,6 +23,7 @@ public class User {
     }
 
     public User(String firstName, String lastName, List<Ticket> tickets, String password, String email) {
+        setId();
         setTickets(tickets);
         setLastName(lastName);
         setFirstName(firstName);
@@ -86,7 +87,7 @@ public class User {
     }
 
     public void setTickets(List<Ticket> tickets) {
-        this.tickets = List.copyOf(this.tickets);
+        this.tickets = List.copyOf(tickets);
     }
 
 }

@@ -11,8 +11,8 @@ public class PassengerPlane extends Plane {
     public PassengerPlane() {
     }
 
-    public PassengerPlane(int maxAmountOfSeats, Location location, double speed, List<Route> routes, Height height) {
-        super(maxAmountOfSeats, location, speed, routes, height);
+    public PassengerPlane(int maxAmountOfSeats, Location location, double speed, List<Route> routes, Height height, double maxFlyDistance) {
+        super(maxAmountOfSeats, location, speed, routes, height, maxFlyDistance);
     }
 
     @Override
@@ -24,7 +24,7 @@ public class PassengerPlane extends Plane {
 
     @Override
     public void setSpeed(double speed) {
-        if (speed > 255 || speed < 0)
+        if (speed > 300 || speed < 0)
             throw new InvalidParameterException("Passenger plane too fast or its speed less than zero");
         this.speed = speed;
     }

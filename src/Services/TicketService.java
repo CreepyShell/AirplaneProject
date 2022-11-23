@@ -50,6 +50,8 @@ public class TicketService implements ITicketService {
             throw new InvalidParameterException("You can not reschedule trip less than 7 days before take off");
         }
 
+        List<Ticket> tickets = db.getTickets();
+
         return null;
     }
 

@@ -22,15 +22,17 @@ public abstract class Plane {
         setRoutes(new ArrayList<>());
         setSpeed(200);
         setMaxAmountOfSeats(2);
+        setMaxFlyDistance(100001);
     }
 
-    public Plane(int maxAmountOfSeats, Location location, double speed, List<Route> routes, Height height) {
+    public Plane(int maxAmountOfSeats, Location location, double speed, List<Route> routes, Height height, double maxFlyDistance) {
         setId();
         setMaxAmountOfSeats(maxAmountOfSeats);
         setLocation(location);
         setSpeed(speed);
         setRoutes(routes);
         setHeight(height);
+        setMaxFlyDistance(maxFlyDistance);
     }
 
     public String getId() {

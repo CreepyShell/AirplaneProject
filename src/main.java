@@ -1,31 +1,22 @@
-import Models.Location;
 import Models.PlaneDb;
+import Models.User;
 import Services.FileService;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
+import org.json.JSONException;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class main {
-    public static void main(String[] args) throws IOException, ClassNotFoundException {
-        try {
-            FileService file = new FileService();
-            PlaneDb db = new PlaneDb(file);
-            Gson json = new GsonBuilder().setPrettyPrinting().create();
-            System.out.println(db.getLocations().size());
-            String locations = json.toJson(db.getLocations(), new TypeToken<ArrayList<Location>>(){}.getType());
-            file.writeInFile(locations,"locations.json");
-
-            String resJson = file.readFromFile("locations.json");
-
-            Location[] locations2 = json.fromJson(resJson, Location[].class);
-
-            System.out.println(locations2.length);
-        } catch (Exception ex) {
-            System.out.println(ex.getMessage());
-        }
+    public static void main(String[] args) throws IOException, ClassNotFoundException, JSONException {
+        FileService fileService = new FileService();
+        PlaneDb planeDb = new PlaneDb(fileService);
+        User user = new User("Admin", "Main", new ArrayList<>(), "simplePassword", "email");
+        planeDb.readRoutesFromFile();
+        List<User> users = planeDb.getUsers();
+        users.add(user);
+        planeDb.setUsers(users);
+        System.out.println(planeDb.getUsers().size());
 
     }
 }

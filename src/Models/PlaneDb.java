@@ -8,8 +8,13 @@ import Models.Plane.PrivatePlane;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONWriter;
 
-import java.time.LocalDate;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class PlaneDb {
@@ -21,26 +26,40 @@ public class PlaneDb {
     private List<Location> locations;
 
     private final IFileService fileService;
-    Gson json;
+    private final Gson json;
 
-    public PlaneDb(IFileService fileService) {
-        json = new GsonBuilder().setPrettyPrinting().create();
+    public PlaneDb(IFileService fileService) throws JSONException {
+        json = new GsonBuilder().setPrettyPrinting().setDateFormat("dd/MM/yyyy HH:mm:ss").create();
         this.fileService = fileService;
-        insertValuesIntoPlane();
-        insertValuesIntoRoute();
-        insertValuesIntoLocation();
         tickets = new ArrayList<>();
         users = new ArrayList<>();
-    }
 
-    public PlaneDb(List<Plane> planes, List<Route> routes, List<Ticket> tickets, List<User> users, List<Location> locations, IFileService fileService) {
-        json = new GsonBuilder().setPrettyPrinting().create();
-        this.fileService = fileService;
-        setPlanes(planes);
-        setRoutes(routes);
-        setTickets(tickets);
-        setUsers(users);
-        setLocations(locations);
+        if (fileService.isEmptyFile(fileService.getLocationFile())) {
+            this.insertValuesIntoLocation();
+            writeLocationsInFile();
+        } else
+            this.readLocationsFromFile();
+
+        if (fileService.isEmptyFile("cargo" + fileService.getPlaneFile()) ||
+                fileService.isEmptyFile("passenger" + fileService.getPlaneFile()) ||
+                fileService.isEmptyFile("private" + fileService.getPlaneFile())) {
+            this.insertValuesIntoPlane();
+            writePlanesInFile();
+        } else
+            this.readPlanesFromFile();
+
+        if (fileService.isEmptyFile(fileService.getRouteFile())) {
+            this.insertValuesIntoRoute();
+            writeRoutesInFile();
+        } else
+            this.readRoutesFromFile();
+
+        if (!fileService.isEmptyFile(fileService.getUserFile()))
+            this.readUsersFromFile();
+
+        if (!fileService.isEmptyFile(fileService.getTicketFile())) {
+            this.readTicketsFromFile();
+        }
     }
 
     public void setLocations(List<Location> locations) {
@@ -65,7 +84,7 @@ public class PlaneDb {
         return routes;
     }
 
-    public void setRoutes(List<Route> routes) {
+    public void setRoutes(List<Route> routes) throws JSONException {
         this.routes = routes;
         this.writeRoutesInFile();
     }
@@ -94,16 +113,56 @@ public class PlaneDb {
         fileService.writeInFile(locations, fileService.getLocationFile());
     }
 
-    public void writeRoutesInFile() {
-        String routes = json.toJson(this.routes, new TypeToken<ArrayList<Route>>() {
-        }.getType());
-        fileService.writeInFile(routes, fileService.getRouteFile());
+    public void writeRoutesInFile() throws JSONException {
+        JSONArray array = new JSONArray();
+        for (Route route : this.getRoutes()) {
+            JSONObject object = new JSONObject(route);
+            if (route.getPlane().getClass().getSimpleName().equals("PassengerPlane")) {
+                object.put("passengerPlane", new JSONObject(json.toJson(route.getPlane())));
+                object.remove("plane");
+                array.put(object);
+            }
+            if (route.getPlane().getClass().getSimpleName().equals("CargoPlane")) {
+                object.put("cargoPlane", new JSONObject(json.toJson(route.getPlane())));
+                object.remove("plane");
+                array.put(object);
+            }
+            if (route.getPlane().getClass().getSimpleName().equals("PrivatePlane")) {
+                object.put("privatePlane", new JSONObject(json.toJson(route.getPlane())));
+                object.remove("plane");
+                array.put(object);
+            }
+            object.remove("takeOffTime");
+            DateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+            object.put("takeOffTime", format.format(route.getTakeOffTime()));
+        }
+        fileService.writeInFile(array.toString(4), fileService.getRouteFile());
     }
 
+
     public void writePlanesInFile() {
-        String planes = json.toJson(this.planes, new TypeToken<ArrayList<Plane>>() {
+        List<PrivatePlane> privatePlanes = new ArrayList<>();
+        List<CargoPlane> cargoPlanes = new ArrayList<>();
+        List<PassengerPlane> passengerPlanes = new ArrayList<>();
+        for (Plane plane : this.getPlanes()) {
+            if (plane.getClass().getSimpleName().equals("PrivatePlane"))
+                privatePlanes.add((PrivatePlane) plane);
+            if (plane.getClass().getSimpleName().equals("PassengerPlane"))
+                passengerPlanes.add((PassengerPlane) plane);
+            if (plane.getClass().getSimpleName().equals("CargoPlane"))
+                cargoPlanes.add((CargoPlane) plane);
+        }
+        String passPlanes = json.toJson(passengerPlanes, new TypeToken<ArrayList<PassengerPlane>>() {
         }.getType());
-        fileService.writeInFile(planes, fileService.getPlaneFile());
+        fileService.writeInFile(passPlanes, "passenger" + fileService.getPlaneFile());
+
+        String carPlanes = json.toJson(cargoPlanes, new TypeToken<ArrayList<CargoPlane>>() {
+        }.getType());
+        fileService.writeInFile(carPlanes, "cargo" + fileService.getPlaneFile());
+
+        String planesPrivate = json.toJson(privatePlanes, new TypeToken<ArrayList<PrivatePlane>>() {
+        }.getType());
+        fileService.writeInFile(planesPrivate, "private" + fileService.getPlaneFile());
     }
 
     public void writeUsersInFile() {
@@ -120,32 +179,53 @@ public class PlaneDb {
 
     public void readLocationsFromFile() {
         String resJson = fileService.readFromFile(fileService.getLocationFile());
-
-        this.locations = Arrays.asList(json.fromJson(resJson, Location[].class));
+        this.locations = new ArrayList<>(Arrays.asList(json.fromJson(resJson, Location[].class)));
     }
 
-    public void readRoutesFromFile() {
+    public void readRoutesFromFile() throws JSONException {
         String resJson = fileService.readFromFile(fileService.getRouteFile());
-
-        this.routes = Arrays.asList(json.fromJson(resJson, Route[].class));
+        JSONArray array = new JSONArray(resJson);
+        this.routes = new ArrayList<>();
+        for (int i = 0; i < array.length(); i++) {
+            JSONObject currentObj = array.getJSONObject(i);
+            Plane routePlane = null;
+            if (!currentObj.isNull("passengerPlane")) {
+                routePlane = json.fromJson(currentObj.getString("passengerPlane"), PassengerPlane.class);
+                currentObj.remove("passengerPlane");
+            }
+            if (!currentObj.isNull("privatePlane")) {
+                routePlane = json.fromJson(currentObj.getString("privatePlane"), PrivatePlane.class);
+                currentObj.remove("privatePlane");
+            }
+            if (!currentObj.isNull("cargoPlane")) {
+                routePlane = json.fromJson(currentObj.getString("cargoPlane"), CargoPlane.class);
+                currentObj.remove("cargoPlane");
+            }
+            Route route = json.fromJson(currentObj.toString(), Route.class);
+            route.setPlane(routePlane);
+            this.routes.add(route);
+        }
     }
 
     public void readPlanesFromFile() {
-        String resJson = fileService.readFromFile(fileService.getPlaneFile());
+        this.planes = new ArrayList<>();
+        this.planes.addAll(Arrays.asList(json.fromJson(readAddTypeOfPlanes("passenger"), PassengerPlane[].class)));
+        this.planes.addAll(Arrays.asList(json.fromJson(readAddTypeOfPlanes("private"), PrivatePlane[].class)));
+        this.planes.addAll(Arrays.asList(json.fromJson(readAddTypeOfPlanes("cargo"), CargoPlane[].class)));
+    }
 
-        this.planes = Arrays.asList(json.fromJson(resJson, Plane[].class));
+    private String readAddTypeOfPlanes(String planeType) {
+        return fileService.readFromFile(planeType + fileService.getPlaneFile());
     }
 
     public void readUsersFromFile() {
         String resJson = fileService.readFromFile(fileService.getUserFile());
-
-        this.users = Arrays.asList(json.fromJson(resJson, User[].class));
+        this.users = new ArrayList<>(Arrays.asList(json.fromJson(resJson, User[].class)));
     }
 
     public void readTicketsFromFile() {
         String resJson = fileService.readFromFile(fileService.getTicketFile());
-
-        this.tickets = Arrays.asList(json.fromJson(resJson, Ticket[].class));
+        this.tickets = new ArrayList<>(Arrays.asList(json.fromJson(resJson, Ticket[].class)));
     }
 
 
@@ -196,13 +276,13 @@ public class PlaneDb {
     }//20 locations
 
     public void insertValuesIntoPlane() {
-        Plane A220_100 = new PassengerPlane(110, this.getLocations().get(1), 240, new ArrayList<Route>(), Height.height6);
-        Plane Airbus_A330 = new PassengerPlane(257, this.getLocations().get(15), 281, new ArrayList<Route>(), Height.height10);
-        Plane Boeing_747 = new PassengerPlane(524, this.getLocations().get(17), 290, new ArrayList<Route>(), Height.height7);
-        Plane Stinson_v_77 = new PrivatePlane(10, this.locations.get(9), 100, new ArrayList<Route>(), Height.height1);
-        Plane GulfStream_G700 = new PrivatePlane(19, this.locations.get(2), 300, new ArrayList<Route>(), Height.height2);
-        Plane An_225Mrija = new CargoPlane(3, this.locations.get(8), 250, new ArrayList<Route>(), Height.height2, 250000.0, 1300.0);
-        Plane Boeing_777F = new CargoPlane(2, this.locations.get(5), 230, new ArrayList<Route>(), Height.height8, 347815, 102);
+        Plane A220_100 = new PassengerPlane(110, this.getLocations().get(1), 240, new ArrayList<>(), Height.height6, 4074000);
+        Plane Airbus_A330 = new PassengerPlane(257, this.getLocations().get(15), 281, new ArrayList<>(), Height.height10, 14390000);
+        Plane Boeing_747 = new PassengerPlane(400, this.getLocations().get(17), 290, new ArrayList<>(), Height.height7, 8560000);
+        Plane Stinson_v_77 = new PrivatePlane(4, this.locations.get(9), 100, new ArrayList<>(), Height.height1, 1368000);
+        Plane GulfStream_G700 = new PrivatePlane(19, this.locations.get(2), 300, new ArrayList<>(), Height.height2, 13890000);
+        Plane An_225Mrija = new CargoPlane(3, this.locations.get(8), 250, new ArrayList<>(), Height.height2, 250000.0, 1300.0, 15400000);
+        Plane Boeing_777F = new CargoPlane(2, this.locations.get(5), 230, new ArrayList<>(), Height.height8, 103000, 653, 9070000);
 
         this.planes = new ArrayList<>() {{
             add(A220_100);
@@ -258,6 +338,6 @@ public class PlaneDb {
             add(route9);
             add(route10);
         }};
-    }
+    }//10 routes
 
 }
