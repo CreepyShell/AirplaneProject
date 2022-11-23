@@ -5,7 +5,7 @@ import Models.*;
 public interface ITicketService {
     Ticket buyTicket(User user, Route route);
 
-    Ticket rescheduleTrip(User user, String routeId, Route otherRoute);
+    Ticket rescheduleTrip(User user, Ticket ticket, Route otherRoute);
 
     boolean cancelTicket(User user, Ticket ticket);
 

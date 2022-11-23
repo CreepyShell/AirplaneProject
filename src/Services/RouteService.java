@@ -2,11 +2,18 @@ package Services;
 
 import Interfaces.IRouteService;
 import Models.Location;
+import Models.PlaneDb;
 import Models.Route;
 
 import java.util.List;
 
 public class RouteService implements IRouteService {
+    private final PlaneDb db;
+
+    public RouteService(PlaneDb db) {
+        this.db = db;
+    }
+
     @Override
     public boolean addRoute(Route route) {
         return false;
@@ -21,6 +28,7 @@ public class RouteService implements IRouteService {
     public boolean deleteRoute(Route route) {
         return false;
     }
+
     @Override
     public double findDistance(Location start, Location end, double radius) {
         double startPointX = Math.toRadians(start.getLatitude());
@@ -47,6 +55,7 @@ public class RouteService implements IRouteService {
 
     @Override
     public List<Route> findRoutesByLocation(Location startLocation, Location endLocation) {
-        return null;
+        return db.getRoutes().stream().filter(r -> r.getTakeOffLocation().getCity() == startLocation.getCity() &&
+                r.getLandingLocation().getCity() == endLocation.getCity()).toList();
     }
 }

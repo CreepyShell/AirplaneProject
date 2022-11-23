@@ -172,9 +172,11 @@ public class PlaneDb {
     }
 
     public void writeTicketsInFile() {
+        for(Ticket ticket:this.tickets)
+            ticket.getRoute().setPlane(null);
         String tickets = json.toJson(this.tickets, new TypeToken<ArrayList<Ticket>>() {
         }.getType());
-        fileService.writeInFile(tickets, fileService.getUserFile());
+        fileService.writeInFile(tickets, fileService.getTicketFile());
     }
 
     public void readLocationsFromFile() {
