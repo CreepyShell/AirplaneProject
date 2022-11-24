@@ -47,7 +47,7 @@ public class TicketService implements ITicketService {
             throw new InvalidParameterException("User, ticket or another route did not find");
 
         long timeDifference = dbRoute.getTakeOffTime().getTime() - Calendar.getInstance().getTime().getTime();
-        if ((timeDifference / (1000 * 60 * 60 * 24)) % 365 > 7) {
+        if ((timeDifference / (1000 * 60 * 60 * 24)) > 7) {
             throw new InvalidParameterException("You can not reschedule trip less than 7 days before take off");
         }
 
@@ -71,7 +71,7 @@ public class TicketService implements ITicketService {
             throw new InvalidParameterException("User, ticket or another route did not find");
 
         long timeDifference = dbTicket.getRoute().getTakeOffTime().getTime() - Calendar.getInstance().getTime().getTime();
-        if ((timeDifference / (1000 * 60 * 60 * 24)) % 365 > 7) {
+        if ((timeDifference / (1000 * 60 * 60 * 24)) > 7) {
             return false;
         }
 
@@ -84,6 +84,12 @@ public class TicketService implements ITicketService {
     @Override
     public Ticket[] buildTrip(Location startLocation, Location endLocation) {
         return new Ticket[0];
+    }
+
+    @Override
+    public Ticket[] getTicketsByUserId(String userId) {
+        List<Ticket> tickets = db.getTickets().stream().filter(t -> Objects.equals(t.getUser().getId(), userId)).toList();
+        return tickets.toArray(new Ticket[0]);
     }
 
     private boolean checkAvailableTickets(Route route) {

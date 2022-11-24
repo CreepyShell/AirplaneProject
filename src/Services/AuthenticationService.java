@@ -21,7 +21,7 @@ public class AuthenticationService implements IAuthenticationService {
 
     @Override
     public User login(String password, String email) {
-        User user = db.getUsers().stream().filter(u -> u.getEmail() == email).findAny().orElse(null);
+        User user = db.getUsers().stream().filter(u -> Objects.equals(u.getEmail(), email)).findAny().orElse(null);
         if (user == null)
             throw new IllegalArgumentException("did not find user with given email");
         if (!isValidPassword(password, user.getSalt(), user.getPasswordHash())) {

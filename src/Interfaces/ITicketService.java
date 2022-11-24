@@ -10,4 +10,5 @@ public interface ITicketService {
     boolean cancelTicket(User user, Ticket ticket);
 
     Ticket[] buildTrip(Location startLocation, Location endLocation);
+    Ticket[] getTicketsByUserId(String userId);
 }

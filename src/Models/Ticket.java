@@ -10,8 +10,8 @@ public class Ticket {
     private User user;
     private Route route;
 
-    public Ticket(){
-    setId();
+    public Ticket() {
+        setId();
     }
 
     public Ticket(Date dateBought, User user, Route route) {
@@ -27,7 +27,7 @@ public class Ticket {
     }
 
     private void setId() {
-        this.id = id;
+        this.id = UUID.randomUUID().toString();
     }
 
     public Date getDateBought() {

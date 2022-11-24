@@ -11,14 +11,12 @@ import com.google.gson.reflect.TypeToken;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONWriter;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class PlaneDb {
-
     private List<Plane> planes;
     private List<Route> routes;
     private List<Ticket> tickets;
@@ -230,7 +228,6 @@ public class PlaneDb {
         this.tickets = new ArrayList<>(Arrays.asList(json.fromJson(resJson, Ticket[].class)));
     }
 
-
     public void insertValuesIntoLocation() {
         Location Dublin = new Location(53.34913137291644, -6.2533176466138745, "Dublin", "Ireland");
         Location Manchester = new Location(53.497779723632654, -2.2673056791182837, "Manchester", "England");
@@ -341,5 +338,4 @@ public class PlaneDb {
             add(route10);
         }};
     }//10 routes
-
 }
