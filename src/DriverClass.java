@@ -1,16 +1,8 @@
-import Interfaces.IAuthenticationService;
-import Interfaces.IFileService;
-import Interfaces.IRouteService;
-import Interfaces.ITicketService;
+import Interfaces.*;
 import Models.PlaneDb;
 import Models.User;
-import Services.AuthenticationService;
-import Services.FileService;
-import Services.RouteService;
-import Services.TicketService;
-import Windows.AuthWindow;
-import Windows.IntroductionWindow;
-import Windows.MainMenu;
+import Services.*;
+import Windows.*;
 import org.json.JSONException;
 
 import javax.swing.*;
@@ -24,14 +16,16 @@ public class DriverClass {
     private static ITicketService ticketService;
     private static IRouteService routeService;
     private static IAuthenticationService authService;
+    private static ILocationService locationService;
     private static User currentUser = new User();
 
     public static void main(String[] args) throws ParseException, JSONException {
         fileService = new FileService();
         planeDb = new PlaneDb(fileService);
         ticketService = new TicketService(planeDb);
-        routeService = new RouteService(planeDb);
+        locationService = new LocationService(planeDb);
+        routeService = new RouteService(planeDb, locationService);
         authService = new AuthenticationService(planeDb);
-        MainMenu mainMenu = new MainMenu(ticketService, currentUser);
+        RoutesWindow mainMenu = new RoutesWindow(routeService);
     }
 }

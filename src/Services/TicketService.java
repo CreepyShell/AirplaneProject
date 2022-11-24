@@ -1,5 +1,7 @@
 package Services;
 
+import CustomExceptions.BalanceException;
+import CustomExceptions.RouteException;
 import Interfaces.ITicketService;
 import Models.*;
 
@@ -17,15 +19,24 @@ public class TicketService implements ITicketService {
 
     @Override
     public Ticket buyTicket(User user, Route route) {
-        User dbUser = db.getUsers().stream().filter(us -> us.getId().equals(user.getId())).findAny().orElse(null);
+        List<User> users = db.getUsers();
+        User dbUser = users.stream().filter(us -> us.getId().equals(user.getId())).findAny().orElse(null);
         Route dbRoute = db.getRoutes().stream().filter(r -> r.getId().equals(route.getId())).findAny().orElse(null);
 
         if (dbRoute == null || dbUser == null)
             throw new InvalidParameterException("User or route was not found");
 
         if (!checkAvailableTickets(route)) {
-            throw new IllegalArgumentException();
+            throw new RouteException("Route was not found");
         }
+
+        if (user.getBalance() < route.getCost()) {
+            throw new BalanceException("User does not have enough money to but the tickets");
+        }
+        users.remove(user);
+        user.setBalance(user.getBalance() - route.getCost());
+        users.add(user);
+        db.setUsers(users);
 
         Ticket ticket = new Ticket(Calendar.getInstance().getTime(), dbUser, dbRoute);
 
@@ -64,7 +75,8 @@ public class TicketService implements ITicketService {
 
     @Override
     public boolean cancelTicket(User user, Ticket ticket) {
-        User dbUser = db.getUsers().stream().filter(us -> us.getId().equals(user.getId())).findAny().orElse(null);
+        List<User> users = db.getUsers();
+        User dbUser = users.stream().filter(us -> us.getId().equals(user.getId())).findAny().orElse(null);
         Ticket dbTicket = db.getTickets().stream().filter(t -> t.getId().equals(ticket.getId())).findAny().orElse(null);
 
         if (dbTicket == null || dbUser == null)
@@ -74,6 +86,11 @@ public class TicketService implements ITicketService {
         if ((timeDifference / (1000 * 60 * 60 * 24)) > 7) {
             return false;
         }
+
+        users.remove(dbUser);
+        dbUser.setBalance(dbUser.getBalance() + ticket.getRoute().getCost() * 0.9);
+        users.add(dbUser);
+        db.setUsers(users);
 
         List<Ticket> tickets = db.getTickets();
         tickets.remove(ticket);

@@ -1,5 +1,7 @@
 package Models;
 
+import CustomExceptions.BalanceException;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -12,6 +14,7 @@ public class User {
     private String password;
     private String salt;
     private String email;
+    private double balance;
     private List<Ticket> tickets;
 
     public User() {
@@ -20,9 +23,11 @@ public class User {
         setFirstName("null");
         setLastName("null");
         setSalt();
+        setBalance(1000);
     }
 
-    public User(String firstName, String lastName, List<Ticket> tickets, String password, String email) {
+    public User(String firstName, String lastName, List<Ticket> tickets, String password, String email, double balance) {
+        setBalance(balance);
         setId();
         setTickets(tickets);
         setLastName(lastName);
@@ -33,7 +38,7 @@ public class User {
     }
 
     public void setPassword(String password) {
-       this.password = password;
+        this.password = password;
     }
 
     public String getPasswordHash() {
@@ -50,6 +55,7 @@ public class User {
         random.nextBytes(array);
         this.salt = new String(array);
     }
+
     public String getEmail() {
         return email;
     }
@@ -90,4 +96,13 @@ public class User {
         this.tickets = List.copyOf(tickets);
     }
 
+    public double getBalance() {
+        return balance;
+    }
+
+    public void setBalance(double balance) {
+        if (balance < 0)
+            throw new BalanceException("Balance can not be negative");
+        this.balance = balance;
+    }
 }
