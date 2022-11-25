@@ -35,4 +35,12 @@ public class PassengerPlane extends Plane {
             throw new InvalidParameterException("Max fly distance of a passenger plane is too long or too short(can be between 100km and 18 000km)");
         this.maxFlyDistance = maxFlyDistance;
     }
+
+    @Override
+    public Plane createCopy() {
+        PassengerPlane plane = new PassengerPlane(this.getMaxAmountOfSeats(), this.getLocation(), this.getSpeed(),
+                List.copyOf(this.getRoutes()), this.getHeight(), this.getMaxFlyDistance(), this.getName());
+        plane.setId(this.getId());
+        return plane;
+    }
 }

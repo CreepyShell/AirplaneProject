@@ -35,4 +35,12 @@ public class PrivatePlane extends Plane {
             throw new InvalidParameterException("Max fly distance of a private plane is too long or too short(can be between 10km and 14 120km)");
         this.maxFlyDistance = maxFlyDistance;
     }
+
+    @Override
+    public Plane createCopy() {
+        PrivatePlane plane = new PrivatePlane(this.getMaxAmountOfSeats(), this.getLocation(), this.getSpeed(),
+                List.copyOf(this.getRoutes()), this.getHeight(), this.getMaxFlyDistance(), this.getName());
+        plane.setId(this.getId());
+        return plane;
+    }
 }

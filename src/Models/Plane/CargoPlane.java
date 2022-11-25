@@ -64,4 +64,12 @@ public class CargoPlane extends Plane {
         }
         this.maxGoodsWeight = maxGoodsWeight;
     }
+
+    @Override
+    public Plane createCopy() {
+        CargoPlane plane = new CargoPlane(this.getMaxAmountOfSeats(), this.getLocation(), this.getSpeed(),
+                List.copyOf(this.getRoutes()), this.getHeight(), this.getMaxGoodsWeight(), this.getVolume(), this.getMaxFlyDistance(), this.getName());
+        plane.setId(this.getId());
+        return plane;
+    }
 }

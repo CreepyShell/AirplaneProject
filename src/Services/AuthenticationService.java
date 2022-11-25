@@ -1,5 +1,6 @@
 package Services;
 
+import CustomExceptions.ValidationException;
 import Interfaces.IAuthenticationService;
 import Models.PlaneDb;
 import Models.User;
@@ -23,9 +24,9 @@ public class AuthenticationService implements IAuthenticationService {
     public User login(String password, String email) {
         User user = db.getUsers().stream().filter(u -> Objects.equals(u.getEmail(), email)).findAny().orElse(null);
         if (user == null)
-            throw new IllegalArgumentException("did not find user with given email");
+            throw new IllegalArgumentException("Did not find user with given email");
         if (!isValidPassword(password, user.getSalt(), user.getPasswordHash())) {
-            throw new InvalidParameterException("password is not correct");
+            throw new ValidationException("Password is not correct");
         }
         return user;
     }
@@ -33,10 +34,15 @@ public class AuthenticationService implements IAuthenticationService {
     @Override
     public User register(User user) {
         List<User> users = db.getUsers();
-        if(users.stream().anyMatch(u-> Objects.equals(u.getEmail(), user.getEmail()))){
+        if (users.stream().anyMatch(u -> Objects.equals(u.getEmail(), user.getEmail()))) {
             throw new IllegalArgumentException("There is a user with same email");
         }
 
+        if (validateUser(user).length() != 0 || user.getPasswordHash().length() < 8) {
+            throw new ValidationException("Invalid user: " + validateUser(user) + " or password too weak");
+        }
+
+        user.setPassword(this.hashPassword(user.getPasswordHash(), user.getSalt()));
         users.add(user);
         db.setUsers(users);
         return user;
@@ -56,5 +62,18 @@ public class AuthenticationService implements IAuthenticationService {
     @Override
     public boolean isValidPassword(String password, String salt, String hash) {
         return Objects.equals(hashPassword(password, salt), hash);
+    }
+
+    private String validateUser(User user) {
+        if (user.getEmail().length() < 4 || user.getEmail().length() > 40)
+            return "Email is invalid. Must be between 4 and 40";
+
+        if (user.getFirstName().length() < 2 || user.getFirstName().length() > 20)
+            return "First name is invalid. Must be between 2 and 20";
+
+        if (user.getLastName().length() < 2 || user.getLastName().length() > 20)
+            return "Last name is invalid. Must be between 2 and 20";
+        return "";
+
     }
 }

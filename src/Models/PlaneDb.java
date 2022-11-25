@@ -17,6 +17,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class PlaneDb {
+    private static PlaneDb planeDbInstance;
     private List<Plane> planes;
     private List<Route> routes;
     private List<Ticket> tickets;
@@ -26,7 +27,8 @@ public class PlaneDb {
     private final IFileService fileService;
     private final Gson json;
 
-    public PlaneDb(IFileService fileService) throws JSONException {
+    //https://www.geeksforgeeks.org/singleton-class-java/
+    private PlaneDb(IFileService fileService) throws JSONException {
         json = new GsonBuilder().setPrettyPrinting().setDateFormat("dd/MM/yyyy HH:mm:ss").create();
         this.fileService = fileService;
         tickets = new ArrayList<>();
@@ -58,6 +60,12 @@ public class PlaneDb {
         if (!fileService.isEmptyFile(fileService.getTicketFile())) {
             this.readTicketsFromFile();
         }
+    }
+
+    public static PlaneDb getPlainDb(IFileService fileService) throws JSONException {
+        if (planeDbInstance == null)
+            planeDbInstance = new PlaneDb(fileService);
+        return planeDbInstance;
     }
 
     public void setLocations(List<Location> locations) {

@@ -19,6 +19,7 @@ public abstract class Plane {
     private String name;
 
     public Plane() {
+        setId("");
         setHeight(Height.height1);
         setRoutes(new ArrayList<>());
         setSpeed(200);
@@ -29,7 +30,7 @@ public abstract class Plane {
 
     public Plane(int maxAmountOfSeats, Location location, double speed, List<Route> routes, Height height, double maxFlyDistance, String name) {
         setName(name);
-        setId();
+        setId("");
         setMaxAmountOfSeats(maxAmountOfSeats);
         setLocation(location);
         setSpeed(speed);
@@ -42,8 +43,12 @@ public abstract class Plane {
         return id;
     }
 
-    public void setId() {
-        this.id = UUID.randomUUID().toString();
+    public void setId(String id) {
+        if (id.length() == 0) {
+            this.id = UUID.randomUUID().toString();
+            return;
+        }
+        this.id = id;
     }
 
     public int getMaxAmountOfSeats() {
@@ -95,4 +100,6 @@ public abstract class Plane {
     public void setName(String name) {
         this.name = name;
     }
+
+    public abstract Plane createCopy();
 }

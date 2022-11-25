@@ -18,18 +18,18 @@ public class Route {
     public String toString() {
         SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         return "takeOffTime=" + format.format(takeOffTime) +
-                        ", takeOff:" + takeOffLocation.getCity() +
-                        ", land:" + landingLocation.getCity() +
-                        ", plane:" + plane.getName() +
-                        ", cost:" + cost;
+                ", takeOff:" + takeOffLocation.getCity() +
+                ", land:" + landingLocation.getCity() +
+                ", plane:" + plane.getName() +
+                ", cost:" + cost;
     }
 
     public Route() {
-        setId();
+        setId("");
     }
 
     public Route(Date takeOffTime, Location takeOffLocation, Location landingLocation, Plane plane, double cost) {
-        setId();
+        setId("");
         setTakeOffTime(takeOffTime);
         setTakeOffLocation(takeOffLocation);
         setLandingLocation(landingLocation);
@@ -41,8 +41,12 @@ public class Route {
         return id;
     }
 
-    private void setId() {
-        this.id = UUID.randomUUID().toString();
+    public void setId(String id) {
+        if (id.length() == 0) {
+            this.id = UUID.randomUUID().toString();
+            return;
+        }
+        this.id = id;
     }
 
     public Date getTakeOffTime() {
@@ -83,5 +87,11 @@ public class Route {
 
     public void setCost(double cost) {
         this.cost = cost;
+    }
+
+    public Route createCopy() {
+        Route route = new Route(this.takeOffTime, this.takeOffLocation, this.landingLocation, this.plane.createCopy(), this.cost);
+        route.setId(this.getId());
+        return route;
     }
 }

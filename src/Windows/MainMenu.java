@@ -6,14 +6,16 @@ import Models.User;
 
 import javax.swing.*;
 import java.awt.*;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class MainMenu extends JFrame {
     private final ITicketService ticketService;
+    private final WindowsManager windowsManager;
     private final User currentUser;
 
-    public MainMenu(ITicketService ticketService, User user) {
+    public MainMenu(ITicketService ticketService, User user, WindowsManager windowsManager) {
+        this.windowsManager = windowsManager;
         this.ticketService = ticketService;
         this.currentUser = user;
         this.setTitle("Main menu");
@@ -21,50 +23,93 @@ public class MainMenu extends JFrame {
         this.setResizable(false);
         panel.setLayout(null);
 
+        JLabel labelName = new JLabel(currentUser.getFirstName() + " " + currentUser.getLastName() + "!");
+        labelName.setBounds(30, 20, 450, 26);
+        labelName.setFont(new Font("Verdana", Font.PLAIN, 22));
+
         JLabel label = new JLabel("Welcome to the funny airlines!");
-        label.setBounds(80, 20, 400, 21);
-        label.setFont(new Font("Verdana", Font.BOLD, 20));
+        label.setBounds(80, 60, 400, 21);
+        label.setFont(new Font("Verdana", Font.BOLD, 18));
+
+        JLabel labelBalance = new JLabel("Your balance is " + currentUser.getBalance() + "$");
+        labelBalance.setBounds(150, 90, 200, 21);
+        labelBalance.setFont(new Font("Verdana", Font.ITALIC, 15));
+        labelBalance.setBackground(Color.GREEN);
 
         ArrayList<String> ticketsStr = new ArrayList<>();
+        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
         for (Ticket t : this.ticketService.getTicketsByUserId(this.currentUser.getId())) {
-            ticketsStr.add(t.getId() + "--" + t.getDateBought() + "--" + t.getRoute().getTakeOffLocation().getCity()
-                    + "--" + t.getRoute().getLandingLocation().getCity());
+            ticketsStr.add("Bought " + format.format(t.getDateBought()) + ", from " + t.getRoute().getTakeOffLocation().getCity() +
+                    ", to " + t.getRoute().getLandingLocation().getCity() + " " + t.getRoute().getCost() + "$, " + t.getId());
         }
 
         JComboBox cb = new JComboBox(ticketsStr.toArray());
-        cb.setBounds(50, 60, 400, 30);
+        cb.setBounds(50, 120, 400, 30);
 
-        JButton cancelTicket = new JButton();
-        cancelTicket.setBounds(60, 100, 180, 30);
+        JButton cancelTicket = new JButton("Cancel chosen ticket");
+        cancelTicket.setBounds(60, 170, 180, 30);
         cancelTicket.setFont(new Font("Times new Roman", Font.PLAIN, 15));
-        cancelTicket.setText("Cancel chosen ticket");
+        cancelTicket.addActionListener(l -> {
+            if (cb.getItemCount() == 0) {
+                JOptionPane.showMessageDialog(cancelTicket, "You have no tickets");
+                return;
+            }
+            Object selectedItem = cb.getSelectedItem();
+            String ticketId = selectedItem.toString().split(", ")[3];
+            Ticket ticket = ticketService.getTicketById(ticketId);
+            if (ticketService.cancelTicket(currentUser, ticket)) {
+                JOptionPane.showMessageDialog(cancelTicket, "Ticket successfully canceled");
+                cb.removeItem(selectedItem);
+                currentUser.setBalance(currentUser.getBalance() + ticket.getRoute().getCost() * 0.9);
+                labelBalance.setText("Your balance is " + currentUser.getBalance() + "$");
+                return;
+            }
+            JOptionPane.showMessageDialog(cancelTicket, "You can not cancel a ticket less than 7 days before take off");
+        });
 
-        JButton rescheduleTicket = new JButton();
-        rescheduleTicket.setBounds(250, 100, 200, 30);
+        JButton rescheduleTicket = new JButton("Reschedule chosen ticket");
+        rescheduleTicket.setBounds(250, 170, 200, 30);
         rescheduleTicket.setFont(new Font("Times new Roman", Font.PLAIN, 15));
-        rescheduleTicket.setText("Reschedule chosen ticket");
 
-        JButton buyTicket = new JButton();
-        buyTicket.setBounds(100, 160, 280, 50);
+        JButton buyTicket = new JButton("You can buy ticket here");
+        buyTicket.setBounds(100, 220, 280, 50);
         buyTicket.setFont(new Font("Times new Roman", Font.PLAIN, 19));
-        buyTicket.setText("You can buy ticket here");
+        buyTicket.addActionListener(l -> {
+            this.closeWindow();
+            windowsManager.openTicketsWindows(currentUser);
+        });
 
-        JButton manageRoute = new JButton();
-        manageRoute.setBounds(100, 230, 280, 50);
+        JButton manageRoute = new JButton("Manage routes(only for admin)");
+        manageRoute.setBounds(100, 280, 280, 50);
         manageRoute.setFont(new Font("Times new Roman", Font.PLAIN, 19));
-        manageRoute.setText("Manage routes(only for admin)");
+        manageRoute.addActionListener(l -> {
+            if (!user.getEmail().equals("admin@gmail.com")) {
+                JOptionPane.showMessageDialog(manageRoute, "You are not allowed to manage routes");
+                return;
+            }
+            windowsManager.openRouteWindow();
+            this.closeWindow();
+        });
 
-        JButton logOutButton = new JButton();
-        logOutButton.setBounds(80, 300, 120, 28);
+        JButton logOutButton = new JButton("LogOut");
+        logOutButton.setBounds(80, 360, 120, 28);
         logOutButton.setFont(new Font("Times new Roman", Font.PLAIN, 25));
-        logOutButton.setText("LogOut");
+        logOutButton.addActionListener(l -> {
+            this.closeWindow();
+            this.windowsManager.openIntroductionWindow();
+            this.windowsManager.setUser(null);
+        });
 
-        JButton exitButton = new JButton();
-        exitButton.setBounds(240, 300, 100, 28);
+        JButton exitButton = new JButton("Exit");
+        exitButton.setBounds(240, 360, 100, 28);
         exitButton.setFont(new Font("Times new Roman", Font.PLAIN, 25));
-        exitButton.setText("Exit");
+        exitButton.addActionListener(l -> {
+            System.exit(0);
+        });
 
+        panel.add(labelName);
         panel.add(label);
+        panel.add(labelBalance);
         panel.add(buyTicket);
         panel.add(manageRoute);
         panel.add(cancelTicket);
@@ -74,9 +119,14 @@ public class MainMenu extends JFrame {
 
         this.add(cb);
         this.add(panel);
-        this.setSize(530, 400);
+        this.setSize(530, 500);
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setVisible(true);
+    }
+
+    public void closeWindow() {
+        this.setVisible(false);
+        this.dispose();
     }
 }

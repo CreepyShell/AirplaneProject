@@ -2,12 +2,8 @@ import Interfaces.*;
 import Models.PlaneDb;
 import Models.User;
 import Services.*;
-import Windows.*;
+import Windows.WindowsManager;
 import org.json.JSONException;
-
-import javax.swing.*;
-import java.awt.*;
-import java.text.ParseException;
 
 public class DriverClass {
 
@@ -21,11 +17,12 @@ public class DriverClass {
 
     public static void main(String[] args) throws JSONException {
         fileService = new FileService();
-        planeDb = new PlaneDb(fileService);
+        planeDb = PlaneDb.getPlainDb(fileService);
         ticketService = new TicketService(planeDb);
         locationService = new LocationService(planeDb);
         routeService = new RouteService(planeDb, locationService);
         authService = new AuthenticationService(planeDb);
-        IntroductionWindow introductionWindow = new IntroductionWindow();
+        WindowsManager windowsManager = WindowsManager.getInstance(currentUser, ticketService, routeService, locationService, authService);
+        windowsManager.openIntroductionWindow();
     }
 }

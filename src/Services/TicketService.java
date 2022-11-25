@@ -28,7 +28,7 @@ public class TicketService implements ITicketService {
             throw new InvalidParameterException("User or route was not found");
 
         if (!checkAvailableTickets(route)) {
-            throw new RouteException("Route was not found");
+            throw new RouteException("No available tickets on this route!!!");
         }
 
         if (user.getBalance() < route.getCost()) {
@@ -39,12 +39,11 @@ public class TicketService implements ITicketService {
         users.add(user);
         db.setUsers(users);
 
-        Ticket ticket = new Ticket(Calendar.getInstance().getTime(), dbUser, dbRoute);
+        Ticket ticket = new Ticket(Calendar.getInstance().getTime(), dbUser, dbRoute.createCopy());
 
         List<Ticket> tickets = db.getTickets();
         tickets.add(ticket);
         db.setTickets(tickets);
-
         return ticket;
     }
 
@@ -84,7 +83,7 @@ public class TicketService implements ITicketService {
             throw new InvalidParameterException("User, ticket or another route did not find");
 
         long timeDifference = dbTicket.getRoute().getTakeOffTime().getTime() - Calendar.getInstance().getTime().getTime();
-        if ((timeDifference / (1000 * 60 * 60 * 24)) > 7) {
+        if ((timeDifference / (1000 * 60 * 60 * 24)) < 7) {
             return false;
         }
 
@@ -97,6 +96,11 @@ public class TicketService implements ITicketService {
         tickets.remove(ticket);
         db.setTickets(tickets);
         return true;
+    }
+
+    @Override
+    public Ticket getTicketById(String id) {
+        return db.getTickets().stream().filter(t -> t.getId().equals(id)).findAny().orElse(null);
     }
 
     @Override

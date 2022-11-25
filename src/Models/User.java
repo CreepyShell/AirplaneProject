@@ -18,7 +18,7 @@ public class User {
     private List<Ticket> tickets;
 
     public User() {
-        setId();
+        setId("");
         setTickets(new ArrayList<>());
         setFirstName("null");
         setLastName("null");
@@ -28,7 +28,7 @@ public class User {
 
     public User(String firstName, String lastName, List<Ticket> tickets, String password, String email, double balance) {
         setBalance(balance);
-        setId();
+        setId("");
         setTickets(tickets);
         setLastName(lastName);
         setFirstName(firstName);
@@ -64,8 +64,12 @@ public class User {
         this.email = email;
     }
 
-    private void setId() {
-        this.id = UUID.randomUUID().toString();
+    public void setId(String id) {
+        if (id.length() == 0) {
+            this.id = UUID.randomUUID().toString();
+            return;
+        }
+        this.id = id;
     }
 
     public String getId() {

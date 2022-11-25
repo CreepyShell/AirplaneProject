@@ -1,5 +1,7 @@
 package Windows;
 
+import CustomExceptions.BalanceException;
+import CustomExceptions.RouteException;
 import Interfaces.ILocationService;
 import Interfaces.IRouteService;
 import Interfaces.ITicketService;
@@ -10,15 +12,21 @@ import Models.User;
 
 import javax.swing.*;
 import java.awt.*;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 public class TicketsWindow extends JFrame {
     private final ITicketService ticketService;
     private final IRouteService routeService;
     private final ILocationService locationService;
+    private final WindowsManager windowsManager;
     private final User currentUser;
 
-    public TicketsWindow(ITicketService ticketService, IRouteService routeService, ILocationService locationService, User user) {
+    private JComboBox cb;
+    private JButton buyTicket;
+
+    public TicketsWindow(ITicketService ticketService, IRouteService routeService, ILocationService locationService, User user, WindowsManager windowsManager) {
+        this.windowsManager = windowsManager;
         this.routeService = routeService;
         this.ticketService = ticketService;
         this.currentUser = user;
@@ -48,14 +56,54 @@ public class TicketsWindow extends JFrame {
         endCityField.setFont(new Font("Verdana", Font.PLAIN, 20));
         endCityField.setBounds(220, 80, 250, 25);
 
-        JButton findRoutesButton = new JButton();
+        JButton findRoutesButton = new JButton("Find routes");
         findRoutesButton.setBounds(60, 120, 180, 30);
         findRoutesButton.setFont(new Font("Times new Roman", Font.PLAIN, 20));
-        findRoutesButton.setText("Find routes");
+        findRoutesButton.addActionListener(l -> {
+            Location location1 = this.locationService.findLocationByCity(startCityField.getText());
+            Location location2 = this.locationService.findLocationByCity(endCityField.getText());
+            if (location1 == null) {
+                JOptionPane.showMessageDialog(findRoutesButton, "Did not find the take off city");
+                return;
+            }
+            if (location2 == null) {
+                JOptionPane.showMessageDialog(findRoutesButton, "Did not find the landing city");
+                return;
+            }
+            showAvailableRoutes(location1, location2);
+        });
+
+        cb = new JComboBox();
+        cb.setBounds(50, 180, 450, 30);
+        cb.setVisible(false);
+
+        buyTicket = new JButton("Buy ticket");
+        buyTicket.setBounds(130, 220, 180, 35);
+        buyTicket.setFont(new Font("Times new Roman", Font.PLAIN, 23));
+        buyTicket.addActionListener(l -> {
+            try {
+
+                String item = cb.getSelectedItem().toString();
+                Route route = routeService.getRouteById(item.split(": ")[4]);
+                this.ticketService.buyTicket(currentUser, route);
+                JOptionPane.showMessageDialog(null, "Ticket is bought successfully");
+            } catch (RouteException ex) {
+                JOptionPane.showMessageDialog(buyTicket, "The plane is full: " + ex.getMessage());
+            }
+            catch (BalanceException ex){
+                JOptionPane.showMessageDialog(buyTicket, "Not enough money:(");
+            }
+        });
+        buyTicket.setVisible(false);
+
 
         JButton backButton = new JButton("Back");
         backButton.setBounds(240, 300, 100, 28);
         backButton.setFont(new Font("Times new Roman", Font.PLAIN, 25));
+        backButton.addActionListener(l -> {
+            this.closeWindow();
+            windowsManager.openMainMenuWindow(currentUser);
+        });
 
         panel.add(label);
         panel.add(startLabel);
@@ -63,8 +111,9 @@ public class TicketsWindow extends JFrame {
         panel.add(endLabel);
         panel.add(endCityField);
         panel.add(findRoutesButton);
+        this.add(cb);
+        this.add(buyTicket);
         panel.add(backButton);
-        showAvailableRoutes(this.locationService.findLocationByCity(startCityField.getText()), this.locationService.findLocationByCity(endCityField.getText()));
 
         this.add(panel);
         this.setSize(530, 400);
@@ -74,19 +123,23 @@ public class TicketsWindow extends JFrame {
     }
 
     private void showAvailableRoutes(Location start, Location end) {
-        ArrayList<String> routesStr = new ArrayList<>();
-        for (Route r : this.routeService.findRoutesByLocation(start, end)) {
-            routesStr.add(r.getId() + "--" + r.getTakeOffLocation() + "--");
+        cb.removeAllItems();
+        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        Route[] routes = this.routeService.findRoutesByLocation(start, end).toArray(new Route[0]);
+        if (routes.length == 0) {
+            JOptionPane.showMessageDialog(this, "Did not find any routes by given locations");
+            return;
         }
+        for (Route r : routes) {
+            cb.addItem("Take off time: " + format.format(r.getTakeOffTime()) + ", cost: " +
+                    r.getCost() + ", plane: " + r.getPlane().getName() + ", id: " + r.getId());
+        }
+        buyTicket.setVisible(true);
+        cb.setVisible(true);
+    }
 
-        JComboBox cb = new JComboBox(routesStr.toArray());
-        cb.setBounds(50, 180, 400, 30);
-
-        JButton buyTicket = new JButton();
-        buyTicket.setBounds(130, 220, 180, 35);
-        buyTicket.setFont(new Font("Times new Roman", Font.PLAIN, 23));
-        buyTicket.setText("Buy ticket");
-        this.add(cb);
-        this.add(buyTicket);
+    public void closeWindow() {
+        this.setVisible(false);
+        this.dispose();
     }
 }

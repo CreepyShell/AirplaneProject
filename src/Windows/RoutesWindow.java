@@ -2,9 +2,11 @@ package Windows;
 
 import Interfaces.ILocationService;
 import Interfaces.IRouteService;
+import Models.Location;
 import Models.Plane.Plane;
 import Models.Route;
 import Models.Ticket;
+import Models.User;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,10 +20,14 @@ public class RoutesWindow extends JFrame {
     private final IRouteService routeService;
     private final ILocationService locationService;
     private final SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+    private final WindowsManager windowsManager;
+    private User currentUser;
 
-    public RoutesWindow(IRouteService routeService, ILocationService locationService) {
+    public RoutesWindow(IRouteService routeService, ILocationService locationService, WindowsManager windowsManager, User user) {
+        this.windowsManager = windowsManager;
         this.locationService = locationService;
         this.routeService = routeService;
+        currentUser = user;
         this.setTitle("Manage route");
         JPanel panel = new JPanel();
         this.setResizable(false);
@@ -34,6 +40,10 @@ public class RoutesWindow extends JFrame {
         JButton backButton = new JButton("Back");
         backButton.setBounds(500, 10, 100, 28);
         backButton.setFont(new Font("Times new Roman", Font.PLAIN, 25));
+        backButton.addActionListener(l -> {
+            this.closeWindow();
+            windowsManager.openMainMenuWindow(currentUser);
+        });
 
         JLabel startLabel = new JLabel("Enter take off city");
         startLabel.setBounds(20, 50, 400, 24);
@@ -58,19 +68,12 @@ public class RoutesWindow extends JFrame {
         JTextField startTime = new JTextField();
         startTime.setBounds(250, 130, 250, 25);
 
-        JLabel endTimeLabel = new JLabel("Enter landing time");
-        endTimeLabel.setFont(new Font("Verdana", Font.ITALIC, 18));
-        endTimeLabel.setBounds(20, 160, 200, 24);
-
-        JTextField endTime = new JTextField();
-        endTime.setBounds(250, 160, 250, 25);
-
         JLabel priceLabel = new JLabel("Enter price");
         priceLabel.setFont(new Font("Verdana", Font.ITALIC, 18));
-        priceLabel.setBounds(20, 190, 200, 24);
+        priceLabel.setBounds(20, 160, 200, 24);
 
         JTextField priceField = new JTextField();
-        priceField.setBounds(250, 190, 250, 25);
+        priceField.setBounds(250, 160, 250, 25);
 
         ArrayList<String> planeStr = new ArrayList<>();
         for (Plane p : this.routeService.getAllPlanes()) {
@@ -78,12 +81,26 @@ public class RoutesWindow extends JFrame {
         }
 
         JComboBox planeComboBox = new JComboBox(planeStr.toArray());
-        planeComboBox.setBounds(30, 230, 450, 30);
+        planeComboBox.setBounds(30, 200, 450, 30);
 
-        JButton addRoute = new JButton();
+        JButton addRoute = new JButton("Add route");
         addRoute.setBounds(60, 270, 180, 30);
         addRoute.setFont(new Font("Times new Roman", Font.PLAIN, 20));
-        addRoute.setText("Add route");
+        addRoute.addActionListener(l -> {
+            try {
+                Location location1 = locationService.findLocationByCity(startCityField.getText());
+                Location location2 = locationService.findLocationByCity(endCityField.getText());
+                Date date1 = format.parse(startTime.getText());
+                double price = Double.parseDouble(priceField.getText());
+                Plane plane = routeService.getPlaneByName(planeComboBox.getSelectedItem().toString().split("")[0]);
+                Route route = new Route(date1, location1, location2, plane, price);
+                routeService.addRoute(route);
+            } catch (ParseException e) {
+                JOptionPane.showMessageDialog(addRoute, "Error parsing:" + e.getMessage());
+            }
+
+
+        });
 
         JLabel choseRouteLabel = new JLabel("Choose route to delete or update");
         choseRouteLabel.setFont(new Font("Verdana", Font.PLAIN, 18));
@@ -112,6 +129,13 @@ public class RoutesWindow extends JFrame {
         JTextField updatePriceField = new JTextField(String.valueOf(route.getCost()));
         updatePriceField.setBounds(250, 420, 150, 25);
 
+        //https://stackoverflow.com/questions/17576446/java-jcombobox-listen-a-change-selection-event
+        routeComboBox.addItemListener(i->{
+//            Route routeUpdated = getRouteByString(routeComboBox.getSelectedItem().toString());
+//            updateStartTime.setText(format.format(routeUpdated.getTakeOffTime()));
+//            updatePriceField.setText(String.valueOf(route.getCost()));
+        });
+
         JLabel updatePlaneLabel = new JLabel("Update plane");
         updatePlaneLabel.setFont(new Font("Verdana", Font.ITALIC, 18));
         updatePlaneLabel.setBounds(20, 450, 200, 24);
@@ -139,8 +163,6 @@ public class RoutesWindow extends JFrame {
         panel.add(endCityField);
         panel.add(startTimeLabel);
         panel.add(startTime);
-        panel.add(endTimeLabel);
-        panel.add(endTime);
         panel.add(priceLabel);
         panel.add(priceField);
         panel.add(planeComboBox);
@@ -177,5 +199,10 @@ public class RoutesWindow extends JFrame {
             JOptionPane.showMessageDialog(this, "The date format is incorrect. Ir must be dd/MM/yyyy HH:mm:ss");
             return new Route();
         }
+    }
+
+    public void closeWindow() {
+        this.setVisible(false);
+        this.dispose();
     }
 }

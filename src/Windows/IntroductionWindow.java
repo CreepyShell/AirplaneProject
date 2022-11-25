@@ -9,11 +9,10 @@ import java.awt.event.ActionListener;
 
 public class IntroductionWindow {
     private final JFrame introduction;
-    private AuthWindow authWindow;
-    private final IAuthenticationService authenticationService;
+    private final WindowsManager windowsManager;
 
-    public IntroductionWindow(IAuthenticationService service) {
-        this.authenticationService = service;
+    public IntroductionWindow(WindowsManager windowsManager) {
+        this.windowsManager = windowsManager;
         introduction = new JFrame("FunnyAirlines");
         JPanel panel = new JPanel();
         introduction.setResizable(false);
@@ -27,13 +26,12 @@ public class IntroductionWindow {
         helpLabel.setBounds(10, 50, 520, 45);
         helpLabel.setFont(new Font("Verdana", Font.ITALIC, 15));
 
-        JButton login = new JButton("login");
+        JButton login = new JButton("Login");
         login.setBounds(180, 100, 150, 50);
         login.setFont(new Font("Times new Roman", Font.PLAIN, 25));
         login.addActionListener(e -> {
-            introduction.setVisible(false);
-            introduction.dispose();
-            authWindow = new AuthWindow(true, introduction, authenticationService);
+            this.closeWindow();
+            windowsManager.openAuthWindowLogin();
         });
 
         JButton register = new JButton();
@@ -41,9 +39,8 @@ public class IntroductionWindow {
         register.setFont(new Font("Times new Roman", Font.PLAIN, 25));
         register.setText("Register");
         register.addActionListener(l -> {
-            introduction.setVisible(false);
-            introduction.dispose();
-            authWindow = new AuthWindow(false, introduction, authenticationService);
+            this.closeWindow();
+            windowsManager.openAuthWindowRegister();
         });
 
         panel.add(label);
@@ -56,5 +53,9 @@ public class IntroductionWindow {
         introduction.setLocationRelativeTo(null);
         introduction.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         introduction.setVisible(true);
+    }
+    public void closeWindow(){
+        introduction.setVisible(false);
+        introduction.dispose();
     }
 }

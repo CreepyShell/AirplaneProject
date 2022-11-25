@@ -11,11 +11,11 @@ public class Ticket {
     private Route route;
 
     public Ticket() {
-        setId();
+        setId("");
     }
 
     public Ticket(Date dateBought, User user, Route route) {
-        setId();
+        setId("");
         setDateBought(dateBought);
         setDateReschedule(dateBought);
         setUser(user);
@@ -26,8 +26,12 @@ public class Ticket {
         return this.id;
     }
 
-    private void setId() {
-        this.id = UUID.randomUUID().toString();
+    public void setId(String id) {
+        if (id.length() == 0) {
+            this.id = UUID.randomUUID().toString();
+            return;
+        }
+        this.id = id;
     }
 
     public Date getDateBought() {
