@@ -11,8 +11,8 @@ public class PassengerPlane extends Plane {
     public PassengerPlane() {
     }
 
-    public PassengerPlane(int maxAmountOfSeats, Location location, double speed, List<Route> routes, Height height, double maxFlyDistance) {
-        super(maxAmountOfSeats, location, speed, routes, height, maxFlyDistance);
+    public PassengerPlane(int maxAmountOfSeats, Location location, double speed, List<Route> routes, Height height, double maxFlyDistance, String name) {
+        super(maxAmountOfSeats, location, speed, routes, height, maxFlyDistance, name);
     }
 
     @Override

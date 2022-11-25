@@ -170,7 +170,7 @@ public class PlaneDb {
     }
 
     public void writeTicketsInFile() {
-        for(Ticket ticket:this.tickets)
+        for (Ticket ticket : this.tickets)
             ticket.getRoute().setPlane(null);
         String tickets = json.toJson(this.tickets, new TypeToken<ArrayList<Ticket>>() {
         }.getType());
@@ -275,13 +275,13 @@ public class PlaneDb {
     }//20 locations
 
     public void insertValuesIntoPlane() {
-        Plane A220_100 = new PassengerPlane(110, this.getLocations().get(1), 240, new ArrayList<>(), Height.height6, 4074000);
-        Plane Airbus_A330 = new PassengerPlane(257, this.getLocations().get(15), 281, new ArrayList<>(), Height.height10, 14390000);
-        Plane Boeing_747 = new PassengerPlane(400, this.getLocations().get(17), 290, new ArrayList<>(), Height.height7, 8560000);
-        Plane Stinson_v_77 = new PrivatePlane(4, this.locations.get(9), 100, new ArrayList<>(), Height.height1, 1368000);
-        Plane GulfStream_G700 = new PrivatePlane(19, this.locations.get(2), 300, new ArrayList<>(), Height.height2, 13890000);
-        Plane An_225Mrija = new CargoPlane(3, this.locations.get(8), 250, new ArrayList<>(), Height.height2, 250000.0, 1300.0, 15400000);
-        Plane Boeing_777F = new CargoPlane(2, this.locations.get(5), 230, new ArrayList<>(), Height.height8, 103000, 653, 9070000);
+        Plane A220_100 = new PassengerPlane(110, this.getLocations().get(1), 240, new ArrayList<>(), Height.height6, 4074000, "A220_100");
+        Plane Airbus_A330 = new PassengerPlane(257, this.getLocations().get(15), 281, new ArrayList<>(), Height.height10, 14390000, "Airbus_A330");
+        Plane Boeing_747 = new PassengerPlane(400, this.getLocations().get(17), 290, new ArrayList<>(), Height.height7, 8560000, "Boeing_747");
+        Plane Stinson_v_77 = new PrivatePlane(4, this.locations.get(9), 100, new ArrayList<>(), Height.height1, 1368000, "Stinson_v_77");
+        Plane GulfStream_G700 = new PrivatePlane(19, this.locations.get(2), 300, new ArrayList<>(), Height.height2, 13890000, "GulfStream_G700");
+        Plane An_225Mrija = new CargoPlane(3, this.locations.get(8), 250, new ArrayList<>(), Height.height2, 250000.0, 1300.0, 15400000, "An_225Mrija");
+        Plane Boeing_777F = new CargoPlane(2, this.locations.get(5), 230, new ArrayList<>(), Height.height8, 103000, 653, 9070000, "Boeing_777F");
 
         this.planes = new ArrayList<>() {{
             add(A220_100);

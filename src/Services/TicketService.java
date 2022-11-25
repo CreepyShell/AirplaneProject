@@ -2,6 +2,7 @@ package Services;
 
 import CustomExceptions.BalanceException;
 import CustomExceptions.RouteException;
+import CustomExceptions.TicketException;
 import Interfaces.ITicketService;
 import Models.*;
 
@@ -59,11 +60,11 @@ public class TicketService implements ITicketService {
 
         long timeDifference = dbRoute.getTakeOffTime().getTime() - Calendar.getInstance().getTime().getTime();
         if ((timeDifference / (1000 * 60 * 60 * 24)) > 7) {
-            throw new InvalidParameterException("You can not reschedule trip less than 7 days before take off");
+            throw new TicketException("You can not reschedule trip less than 7 days before take off");
         }
 
         if (dbOtherRoute.getCost() > dbRoute.getCost()) {
-            throw new InvalidParameterException("Chosen other trip is more expensive than previous");
+            throw new BalanceException("Chosen other trip is more expensive than previous");
         }
 
         List<Ticket> tickets = db.getTickets();

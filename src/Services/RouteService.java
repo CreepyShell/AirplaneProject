@@ -3,6 +3,7 @@ package Services;
 import Interfaces.ILocationService;
 import Interfaces.IRouteService;
 import Models.Location;
+import Models.Plane.Plane;
 import Models.PlaneDb;
 import Models.Route;
 import org.json.JSONException;
@@ -57,6 +58,26 @@ public class RouteService implements IRouteService {
     }
 
     @Override
+    public List<Plane> getAllPlanes() {
+        return db.getPlanes();
+    }
+
+    @Override
+    public List<Route> getAllRoutes() {
+        return db.getRoutes();
+    }
+
+    @Override
+    public Plane getPlaneByName(String name) {
+        return this.db.getPlanes().stream().filter(p->p.getName().equals(name)).findAny().orElse(null);
+    }
+
+    @Override
+    public Route getRouteById(String id) {
+        return db.getRoutes().stream().filter(r -> r.getId().equals(id)).findAny().orElse(null);
+    }
+
+    @Override
     public List<Route> findBestRoutesByPrice(Location start, Location end) {
         List<Route> routesLocation = this.findRoutesByLocation(start, end);
         for (int i = 0; i < routesLocation.size(); i++) {
@@ -81,7 +102,7 @@ public class RouteService implements IRouteService {
 
     @Override
     public List<Route> findRoutesByLocation(Location startLocation, Location endLocation) {
-        if(startLocation==null || endLocation==null){
+        if (startLocation == null || endLocation == null) {
             return new ArrayList<>();
         }
         return db.getRoutes().stream().filter(r -> Objects.equals(r.getTakeOffLocation().getCity(), startLocation.getCity()) &&

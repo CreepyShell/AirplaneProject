@@ -19,13 +19,13 @@ public class DriverClass {
     private static ILocationService locationService;
     private static User currentUser = new User();
 
-    public static void main(String[] args) throws ParseException, JSONException {
+    public static void main(String[] args) throws JSONException {
         fileService = new FileService();
         planeDb = new PlaneDb(fileService);
         ticketService = new TicketService(planeDb);
         locationService = new LocationService(planeDb);
         routeService = new RouteService(planeDb, locationService);
         authService = new AuthenticationService(planeDb);
-        RoutesWindow mainMenu = new RoutesWindow(routeService);
+        IntroductionWindow introductionWindow = new IntroductionWindow();
     }
 }

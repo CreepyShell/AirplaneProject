@@ -17,8 +17,8 @@ public class CargoPlane extends Plane {
         setVolume(50);
     }
 
-    public CargoPlane(int maxAmountOfSeats, Location location, double speed, List<Route> routes, Height height, double maxGoodsWeight, double volume, double maxFlyDistance) {
-        super(maxAmountOfSeats, location, speed, routes, height, maxFlyDistance);
+    public CargoPlane(int maxAmountOfSeats, Location location, double speed, List<Route> routes, Height height, double maxGoodsWeight, double volume, double maxFlyDistance, String name) {
+        super(maxAmountOfSeats, location, speed, routes, height, maxFlyDistance, name);
         setMaxGoodsWeight(maxGoodsWeight);
         setVolume(volume);
     }

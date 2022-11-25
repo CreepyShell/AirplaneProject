@@ -2,6 +2,7 @@ package Models;
 
 import Models.Plane.Plane;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
 
@@ -12,6 +13,16 @@ public class Route {
     private Location landingLocation;
     private Plane plane;
     private double cost;
+
+    @Override
+    public String toString() {
+        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        return "takeOffTime=" + format.format(takeOffTime) +
+                        ", takeOff:" + takeOffLocation.getCity() +
+                        ", land:" + landingLocation.getCity() +
+                        ", plane:" + plane.getName() +
+                        ", cost:" + cost;
+    }
 
     public Route() {
         setId();
@@ -65,6 +76,7 @@ public class Route {
     public void setPlane(Plane plane) {
         this.plane = plane;
     }
+
     public double getCost() {
         return cost;
     }

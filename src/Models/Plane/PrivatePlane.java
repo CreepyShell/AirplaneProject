@@ -12,8 +12,8 @@ public class PrivatePlane extends Plane {
         super();
     }
 
-    public PrivatePlane(int maxAmountOfSeats, Location location, double speed, List<Route> routes, Height height, double maxFlyDistance) {
-        super(maxAmountOfSeats, location, speed, routes, height, maxFlyDistance);
+    public PrivatePlane(int maxAmountOfSeats, Location location, double speed, List<Route> routes, Height height, double maxFlyDistance, String name) {
+        super(maxAmountOfSeats, location, speed, routes, height, maxFlyDistance, name);
     }
 
     public void setMaxAmountOfSeats(int maxAmountOfSeats) {

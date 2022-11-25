@@ -1,12 +1,20 @@
 package Windows;
 
+import Interfaces.IAuthenticationService;
+import Models.User;
+
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 
 public class AuthWindow {
     private final JFrame auth;
+    private User currentUser;
+    private final IAuthenticationService authenticationService;
+    JPasswordField confirmPasswordField;
 
-    public AuthWindow(boolean isLogin) {
+    public AuthWindow(boolean isLogin, JFrame previousWindow, IAuthenticationService service) {
+        this.authenticationService = service;
         String text = "Register";
         if (isLogin)
             text = "Login";
@@ -41,22 +49,43 @@ public class AuthWindow {
             confirmPasswordLabel.setBounds(50, 160, 200, 21);
             confirmPasswordLabel.setFont(new Font("Verdana", Font.PLAIN, 16));
 
-            JPasswordField confirmPasswordField = new JPasswordField(30);
+            confirmPasswordField = new JPasswordField(30);
             confirmPasswordField.setBounds(250, 160, 250, 25);
             passwordField.setFont(new Font("Verdana", Font.PLAIN, 16));
             panel.add(confirmPasswordLabel);
             panel.add(confirmPasswordField);
         }
 
-        JButton authButton = new JButton();
+        JButton authButton = new JButton(text);
         authButton.setBounds(180, 220, 150, 50);
         authButton.setFont(new Font("Times new Roman", Font.PLAIN, 25));
-        authButton.setText(text);
+        authButton.addActionListener(l -> {
+            String password = String.valueOf(passwordField.getPassword());
+            String email = emailLabel.getText();
+            if (isLogin) {
+                currentUser = authenticationService.login(password, email);
+                
+                return;
+            }
+            String confirmPassword = String.valueOf(confirmPasswordField.getPassword());
+            currentUser = new User("default first name", "default last name", new ArrayList<>(), confirmPassword, email, 1000);
+            currentUser = authenticationService.register(currentUser);
+        });
+
+        JButton backButton = new JButton("Back");
+        backButton.setBounds(400, 10, 100, 30);
+        backButton.setFont(new Font("Times new Roman", Font.PLAIN, 25));
+        backButton.addActionListener(l -> {
+            auth.setVisible(false);
+            auth.dispose();
+            previousWindow.setVisible(true);
+        });
 
         panel.add(label);
         panel.add(emailLabel);
         panel.add(passwordLabel);
         panel.add(authButton);
+        panel.add(backButton);
 
         panel.add(emailText);
         panel.add(passwordField);
@@ -66,9 +95,5 @@ public class AuthWindow {
         auth.setLocationRelativeTo(null);
         auth.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         auth.setVisible(true);
-    }
-
-    public void showErrorMessage() {
-
     }
 }
