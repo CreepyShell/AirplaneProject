@@ -1,9 +1,12 @@
-import Interfaces.*;
-import Models.PlaneDb;
-import Models.User;
-import Services.*;
-import Windows.WindowsManager;
+import BLL.Interfaces.*;
+import BLL.Services.*;
+import BLL.Services.AuthDecorator.LogDecorator;
+import DAL.Models.PlaneDb;
+import DAL.Models.User;
+import DAL.Repositories.UserRepository;
+import PAL.WindowsManager;
 import org.json.JSONException;
+
 
 public class DriverClass {
 
@@ -21,8 +24,11 @@ public class DriverClass {
         ticketService = new TicketService(planeDb);
         locationService = new LocationService(planeDb);
         routeService = new RouteService(planeDb, locationService);
-        authService = new AuthenticationService(planeDb);
-        WindowsManager windowsManager = WindowsManager.getInstance(currentUser, ticketService, routeService, locationService, authService);
+        UserRepository userRepository = new UserRepository(planeDb);
+        authService = new AuthenticationService(userRepository);
+        LogDecorator logDecorator = new LogDecorator(userRepository);
+        logDecorator.setAuthService((AuthenticationService) authService);
+        WindowsManager windowsManager = WindowsManager.getInstance(currentUser, ticketService, routeService, locationService, logDecorator);
         windowsManager.openIntroductionWindow();
     }
 }

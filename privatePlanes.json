@@ -1,0 +1,34 @@
+[
+  {
+    "id": "3e2fa961-94f1-48b2-b760-caf72991e63d",
+    "maxAmountOfSeats": 4,
+    "location": {
+      "id": "fbc16a7a-e953-48fb-8f77-9f540bb21569",
+      "latitude": 43.91538753360366,
+      "longitude": -18.355641326316093,
+      "city": "Sarajevo",
+      "country": "Bosnia and Herzegovina"
+    },
+    "speed": 100.0,
+    "maxFlyDistance": 1368000.0,
+    "routes": [],
+    "height": "height1",
+    "name": "Stinson_v_77"
+  },
+  {
+    "id": "743842b5-3ece-4828-ac60-ea83d238c0e2",
+    "maxAmountOfSeats": 19,
+    "location": {
+      "id": "d7a66d89-696e-49fe-b9ea-4e89a7c43422",
+      "latitude": 51.690625780845124,
+      "longitude": -0.11788861617249717,
+      "city": "London",
+      "country": "England"
+    },
+    "speed": 300.0,
+    "maxFlyDistance": 1.389E7,
+    "routes": [],
+    "height": "height2",
+    "name": "GulfStream_G700"
+  }
+]
