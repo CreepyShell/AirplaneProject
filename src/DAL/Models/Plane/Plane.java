@@ -18,7 +18,7 @@ public abstract class Plane {
     private Height height;
     private String name;
 
-    public Plane() {
+    protected Plane() {
         setId("");
         setHeight(Height.height1);
         setRoutes(new ArrayList<>());
@@ -28,7 +28,7 @@ public abstract class Plane {
         setName("null");
     }
 
-    public Plane(int maxAmountOfSeats, Location location, double speed, List<Route> routes, Height height, double maxFlyDistance, String name) {
+    protected Plane(int maxAmountOfSeats, Location location, double speed, List<Route> routes, Height height, double maxFlyDistance, String name) {
         setName(name);
         setId("");
         setMaxAmountOfSeats(maxAmountOfSeats);

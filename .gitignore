@@ -1,0 +1,7 @@
+.idea/
+out/
+cargoPlanes.json
+locations.json
+passengerPlanes.json
+privatePlanes.json
+routes.json

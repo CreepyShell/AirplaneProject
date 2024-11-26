@@ -30,6 +30,9 @@ public class PlaneDb {
 
     private final IFileService fileService;
     private final Gson json;
+    private final String cargoStr = "cargo";
+    private final String privateStr="private";
+    private final String passengerStr="passenger";
 
     //https://www.geeksforgeeks.org/singleton-class-java/
     private PlaneDb(IFileService fileService) throws JSONException {
@@ -118,9 +121,9 @@ public class PlaneDb {
     }
 
     public void writeLocationsInFile() {
-        String locations = json.toJson(this.locations, new TypeToken<ArrayList<Location>>() {
+        String locationsJson = json.toJson(this.locations, new TypeToken<ArrayList<Location>>() {
         }.getType());
-        fileService.writeInFile(locations, fileService.getLocationFile());
+        fileService.writeInFile(locationsJson, fileService.getLocationFile());
     }
 
     public void writeRoutesInFile() throws JSONException {
@@ -164,29 +167,29 @@ public class PlaneDb {
         }
         String passPlanes = json.toJson(passengerPlanes, new TypeToken<ArrayList<PassengerPlane>>() {
         }.getType());
-        fileService.writeInFile(passPlanes, "passenger" + fileService.getPlaneFile());
+        fileService.writeInFile(passPlanes, passengerStr + fileService.getPlaneFile());
 
         String carPlanes = json.toJson(cargoPlanes, new TypeToken<ArrayList<CargoPlane>>() {
         }.getType());
-        fileService.writeInFile(carPlanes, "cargo" + fileService.getPlaneFile());
+        fileService.writeInFile(carPlanes, cargoStr + fileService.getPlaneFile());
 
         String planesPrivate = json.toJson(privatePlanes, new TypeToken<ArrayList<PrivatePlane>>() {
         }.getType());
-        fileService.writeInFile(planesPrivate, "private" + fileService.getPlaneFile());
+        fileService.writeInFile(planesPrivate, privateStr + fileService.getPlaneFile());
     }
 
     public void writeUsersInFile() {
-        String users = json.toJson(this.users, new TypeToken<ArrayList<User>>() {
+        String usersJson = json.toJson(this.users, new TypeToken<ArrayList<User>>() {
         }.getType());
-        fileService.writeInFile(users, fileService.getUserFile());
+        fileService.writeInFile(usersJson, fileService.getUserFile());
     }
 
     public void writeTicketsInFile() {
         for (Ticket ticket : this.tickets)
             ticket.getRoute().setPlane(null);
-        String tickets = json.toJson(this.tickets, new TypeToken<ArrayList<Ticket>>() {
+        String ticketsJson = json.toJson(this.tickets, new TypeToken<ArrayList<Ticket>>() {
         }.getType());
-        fileService.writeInFile(tickets, fileService.getTicketFile());
+        fileService.writeInFile(ticketsJson, fileService.getTicketFile());
     }
 
     public void readLocationsFromFile() {
@@ -221,9 +224,9 @@ public class PlaneDb {
 
     public void readPlanesFromFile() {
         this.planes = new ArrayList<>();
-        this.planes.addAll(Arrays.asList(json.fromJson(readAddTypeOfPlanes("passenger"), PassengerPlane[].class)));
-        this.planes.addAll(Arrays.asList(json.fromJson(readAddTypeOfPlanes("private"), PrivatePlane[].class)));
-        this.planes.addAll(Arrays.asList(json.fromJson(readAddTypeOfPlanes("cargo"), CargoPlane[].class)));
+        this.planes.addAll(Arrays.asList(json.fromJson(readAddTypeOfPlanes(passengerStr), PassengerPlane[].class)));
+        this.planes.addAll(Arrays.asList(json.fromJson(readAddTypeOfPlanes(privateStr), PrivatePlane[].class)));
+        this.planes.addAll(Arrays.asList(json.fromJson(readAddTypeOfPlanes(cargoStr), CargoPlane[].class)));
     }
 
     private String readAddTypeOfPlanes(String planeType) {
@@ -304,15 +307,14 @@ public class PlaneDb {
         Plane GulfStream_G700 = creators[4].createPlane(this.getLocations().get(2));
         Plane An_225Mrija = creators[5].createPlane(this.getLocations().get(8));
         Plane Boeing_777F = creators[6].createPlane(this.getLocations().get(5));
-        this.planes = new ArrayList<>() {{
-            add(A220_100);
-            add(Airbus_A330);
-            add(Boeing_747);
-            add(Stinson_v_77);
-            add(GulfStream_G700);
-            add(An_225Mrija);
-            add(Boeing_777F);
-        }};
+        this.planes = new ArrayList<>();
+        this.planes.add(A220_100);
+        this.planes.add(Airbus_A330);
+        this.planes.add(Boeing_747);
+        this.planes.add(Stinson_v_77);
+        this.planes.add(GulfStream_G700);
+        this.planes.add(An_225Mrija);
+        this.planes.add(Boeing_777F);
 
     }//7 planes:3 pass, 2 private and 2 cargo
 

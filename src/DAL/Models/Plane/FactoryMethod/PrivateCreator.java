@@ -11,6 +11,7 @@ import java.util.List;
 public class PrivateCreator extends PlaneCreator{
     @Override
     public Plane createPlane(Location location) {
+        this.maxAmountOfSeats = 20;
         return new PrivatePlane(maxAmountOfSeats,location, speed, new ArrayList<>(), height, maxFlyDistance, name);
     }
 }

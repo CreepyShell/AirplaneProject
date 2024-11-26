@@ -6,7 +6,6 @@ import DAL.Models.Route;
 import java.security.InvalidParameterException;
 import java.time.Duration;
 import java.time.Instant;
-;
 
 public class CargoCostRouteStrategy implements RoutesCostStrategy {
     @Override

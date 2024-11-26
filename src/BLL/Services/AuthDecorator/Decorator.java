@@ -7,7 +7,7 @@ import DAL.Models.User;
 public abstract class Decorator extends AuthenticationService {
     protected AuthenticationService authService;
 
-    public Decorator(IUserRepository repository) {
+    protected Decorator(IUserRepository repository) {
         super(repository);
     }
 

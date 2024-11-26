@@ -105,8 +105,7 @@ public class RouteService implements IRouteService {
 
     @Override
     public Route getRouteById(String id) {
-        Route route = db.getRoutes().stream().filter(r -> r.getId().equals(id)).findAny().orElse(null);
-        return route;
+        return db.getRoutes().stream().filter(r -> r.getId().equals(id)).findAny().orElse(null);
     }
 
     @Override
