@@ -1,0 +1,35 @@
+@startuml
+class AuthService implements IAuthService{
+    -IUserRepository repository
+    +AuthService(IUserRepository)
+    +login(String password, String username)
+    +register(User)
+}
+
+interface IAuthService{
+    User login(String username, String password)
+    User register(User)
+    String hashPassword(String password, String salt)
+    boolean isValidPassword(String password, String salt, String hash)
+}
+
+abstract class Decorator implements IAuthService{
+    #IAuthService #IAuthService
+    +setAuthService(IAuthenticationService service)
+}
+abstract class LogDecorator extends Decorator{
+    +User login(String username, String password)
+    +User register(User)
+    +String hashPassword(String password, String salt)
+    +boolean isValidPassword(String password, String salt, String hash)
+}
+
+class WindowsManager{
+- WindowsManager(User user, services...)
+- {static} WindowsManager manager
++ {static} WindowsManager getInstance(User user, services...)
+}
+
+WindowsManager "1" *-- "1" LogDecorator:"contains"
+
+@enduml

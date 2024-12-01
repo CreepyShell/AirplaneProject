@@ -1,33 +1,12 @@
 package BLL.Services.AuthDecorator;
 
-import BLL.Services.AuthenticationService;
+import BLL.Interfaces.IAuthenticationService;
 import DAL.Interfaces.IUserRepository;
 import DAL.Models.User;
 
-public abstract class Decorator extends AuthenticationService {
-    protected AuthenticationService authService;
-
-    protected Decorator(IUserRepository repository) {
-        super(repository);
-    }
-
-    public void setAuthService(AuthenticationService service) {
+public abstract class Decorator implements IAuthenticationService {
+    protected IAuthenticationService authService;
+    public void setAuthService(IAuthenticationService service) {
         this.authService = service;
-    }
-
-    @Override
-    public User login(String password, String email) {
-        if (authService != null) {
-            return authService.login(password, email);
-        }
-        return null;
-    }
-
-    @Override
-    public User register(User user) {
-        if (authService != null) {
-            return authService.register(user);
-        }
-        return null;
     }
 }

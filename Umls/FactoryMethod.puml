@@ -1,0 +1,62 @@
+@startuml
+together{
+    abstract class PlaneCreator{
+        #Height height;
+        #int maxAmountOfSeats;
+        #double speed;
+        #double maxFlyDistance;
+        #String name;
+        +{abstract} Plane createPlane(Location)
+    }
+
+    class CargoCreator{
+        +Plane createPlane(Location)
+    }
+
+    class PassengerCreator{
+        +Plane createPlane(Location)
+    }
+
+    class PrivateCreator{
+        +Plane createPlane(Location)
+    }
+}
+
+together{
+    abstract class Plane{
+        +Plane()
+    }
+    class CargoPlane{
+        +Plane()
+    }
+
+    class PassengerPlane{
+        +Plane()
+    }
+
+    class PrivatePlane{
+        +Plane()
+    }
+}
+
+PlaneCreator <|-- CargoCreator
+PlaneCreator <|-- PassengerCreator
+PlaneCreator <|-- PrivateCreator
+
+Plane <|-- CargoPlane
+Plane <|-- PassengerPlane
+Plane <|-- PrivatePlane
+
+CargoCreator::CreatePlane ..> CargoPlane:"returns"
+PassengerCreator::CreatePlane ..> PassengerPlane:"returns"
+PrivateCreator::CreatePlane ..> PrivatePlane:"returns"
+
+class PlaneDb{
+    +{static} PlaneDb getDatabase()
+}
+
+CargoCreator "many" --* "1" PlaneDb
+PrivateCreator "many" --* "1" PlaneDb
+PassengerCreator "many" --* "1" PlaneDb
+
+@enduml

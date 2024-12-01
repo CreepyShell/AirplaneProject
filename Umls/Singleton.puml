@@ -1,0 +1,8 @@
+@startuml
+'https://plantuml.com/class-diagram
+class WindowsManager{
+- WindowsManager(User user, services...)
+- {static} WindowsManager manager
++ {static} WindowsManager getInstance(User user, services...)
+}
+@enduml

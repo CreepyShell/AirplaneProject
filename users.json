@@ -1,0 +1,22 @@
+[
+  {
+    "id": "b44fe1bb-4a44-4599-ab76-692f44599487",
+    "firstName": "hui",
+    "lastName": "borysovich",
+    "password": "/�v�w�\u001cOK����4���Z2�:�\u0002R��㦓\u0003��\t�:\u000e��#��pB��?4\u0014�\u000e�$�S�;BM\u0007��",
+    "salt": "�ƞ\f��?�Y\u00126B\"�7�",
+    "email": "hui@gmail.com",
+    "balance": 1000.0,
+    "tickets": []
+  },
+  {
+    "id": "3a373e83-2971-4daf-b004-50d83b5bccea",
+    "firstName": "admin",
+    "lastName": "admin",
+    "password": "�+\u000f-\u0017��$��L��A����+�\u0001�����\u0010\u0000j�W�g�q��\u0011j��I\u0027���\u001d��avoޗ\u0013�\u001a�P.�X\u0006",
+    "salt": "D�\n\u0017\u001bp�!bnM.�\u0010�\u0015",
+    "email": "admin@gmail.com",
+    "balance": 1000.0,
+    "tickets": []
+  }
+]

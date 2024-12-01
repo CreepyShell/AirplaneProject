@@ -1,0 +1,33 @@
+@startuml
+
+interface RoutesCostStrategy {
+    Double calculateCost(Route);
+}
+
+class CargoCostRouteStrategy implements RoutesCostStrategy{
+    +Double calculateCost(Route);
+}
+
+class PassengerPlaneRouteStrategy implements RoutesCostStrategy{
+    +Double calculateCost(Route);
+}
+
+class PrivatePlaneRouteStrategy implements RoutesCostStrategy{
+    +Double calculateCost(Route);
+}
+
+class RouteCostContext {
+    -RoutesCostStrategy routesCostStrategy;
+    +RouteCostContext(RoutesCostStrategy strategy);
+    +double executeStrategy(Route);
+}
+
+class RouteService{
+    +boolean addRoute(Routes)
+    -private double calculateRouteCost(Route)
+}
+
+RouteCostContext o-- RoutesCostStrategy
+RouteCostContext --o RouteService::calculateRouteCost
+
+@enduml

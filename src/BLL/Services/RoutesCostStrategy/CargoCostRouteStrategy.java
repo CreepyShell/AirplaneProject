@@ -10,11 +10,10 @@ import java.time.Instant;
 public class CargoCostRouteStrategy implements RoutesCostStrategy {
     @Override
     public Double calculateCost(Route route) {
-        if (!(route.getPlane() instanceof CargoPlane)) {
+        if (!(route.getPlane() instanceof CargoPlane cargoPlane)) {
             throw new InvalidParameterException("Invalid plane type provided");
         }
 
-        CargoPlane cargoPlane = (CargoPlane) route.getPlane();
         System.out.println("Calculating the cost of cargo plane route");
         Instant takeOff = route.getTakeOffTime().toInstant();
         Instant land = route.getRandomLandTime().toInstant();

@@ -3,7 +3,7 @@ package BLL.Services.RoutesCostStrategy;
 import DAL.Models.Route;
 
 public class RouteCostContext {
-    private RoutesCostStrategy routesCostStrategy;
+    private final RoutesCostStrategy routesCostStrategy;
     public RouteCostContext(RoutesCostStrategy strategy){
         this.routesCostStrategy = strategy;
     }

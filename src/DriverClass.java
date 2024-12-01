@@ -26,8 +26,8 @@ public class DriverClass {
         routeService = new RouteService(planeDb, locationService);
         UserRepository userRepository = new UserRepository(planeDb);
         authService = new AuthenticationService(userRepository);
-        LogDecorator logDecorator = new LogDecorator(userRepository);
-        logDecorator.setAuthService((AuthenticationService) authService);
+        LogDecorator logDecorator = new LogDecorator();
+        logDecorator.setAuthService(authService);
         WindowsManager windowsManager = WindowsManager.getInstance(currentUser, ticketService, routeService, locationService, logDecorator);
         windowsManager.openIntroductionWindow();
     }
