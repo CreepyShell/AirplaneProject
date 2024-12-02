@@ -8,17 +8,16 @@ import PAL.WindowsManager;
 import org.json.JSONException;
 
 
-public class DriverClass {
-
-    private static PlaneDb planeDb;
-    private static IFileService fileService;
-    private static ITicketService ticketService;
-    private static IRouteService routeService;
-    private static IAuthenticationService authService;
-    private static ILocationService locationService;
+public class DriverClass {    
     private static User currentUser = new User();
 
     public static void main(String[] args) throws JSONException {
+        PlaneDb planeDb;
+        IFileService fileService;
+        ITicketService ticketService;
+        IRouteService routeService;
+        IAuthenticationService authService;
+        ILocationService locationService;
         fileService = new FileService();
         planeDb = PlaneDb.getPlainDb(fileService);
         ticketService = new TicketService(planeDb);

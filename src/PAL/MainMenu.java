@@ -103,9 +103,7 @@ public class MainMenu extends JFrame {
         JButton exitButton = new JButton("Exit");
         exitButton.setBounds(240, 360, 100, 28);
         exitButton.setFont(new Font("Times new Roman", Font.PLAIN, 25));
-        exitButton.addActionListener(l -> {
-            System.exit(0);
-        });
+        exitButton.addActionListener(l -> System.exit(0));
 
         panel.add(labelName);
         panel.add(label);
